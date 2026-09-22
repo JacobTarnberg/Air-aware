@@ -1,0 +1,590 @@
+﻿beteckning,punkt,titel,S,M,SD,V,C,KD,MP,L
+AU10,1,Riksrevisionens rapport om kontrollen av subventionerade anställningar,Nej,Ja,Avstår,Avstår,Ja,Ja,Avstår,Ja
+AU3,1,,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+AU3,3,,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+AU3,4,,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+AU3,5,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+AU3,6,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+AU4,1,Riksrevisionens rapport om Samhalls samhällsuppdrag,Nej,Ja,Ja,Avstår,Avstår,Ja,Ja,Ja
+AU4,2,Riksrevisionens rapport om Samhalls samhällsuppdrag,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+AU5,2,,Ja,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+AU5,3,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+AU5,6,,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+AU5,12,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+AU5,14,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+AU5,15,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+AU6,1,Jämställdhet och åtgärder mot diskriminering,Avstår,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+AU6,2,Jämställdhet och åtgärder mot diskriminering,Avstår,Ja,Avstår,Ja,Nej,Ja,Avstår,Ja
+AU6,3,Jämställdhet och åtgärder mot diskriminering,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+AU6,5,Jämställdhet och åtgärder mot diskriminering,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+AU6,8,Jämställdhet och åtgärder mot diskriminering,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+AU7,1,Integration,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+AU7,2,Integration,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+AU7,4,Integration,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+AU7,5,Integration,Avstår,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+AU7,8,Integration,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+AU7,9,Integration,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+AU8,1,Arbetsmiljö och arbetstid,Nej,Ja,Ja,Avstår,Nej,Ja,Nej,Ja
+AU8,5,Arbetsmiljö och arbetstid,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+AU8,6,Arbetsmiljö och arbetstid,Avstår,Ja,Nej,Avstår,Ja,Ja,Ja,Ja
+AU8,7,Arbetsmiljö och arbetstid,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+AU8,13,Arbetsmiljö och arbetstid,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+AU8,18,Arbetsmiljö och arbetstid,Avstår,Ja,Avstår,Nej,Ja,Ja,Avstår,Ja
+AU9,1,En arbetslöshetsförsäkring baserad på inkomster,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+AU9,2,En arbetslöshetsförsäkring baserad på inkomster,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+AU9,3,En arbetslöshetsförsäkring baserad på inkomster,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+AU9,4,En arbetslöshetsförsäkring baserad på inkomster,Ja,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+CU1,1,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+CU10,2,Ersättningsrätt samt insolvens- och utsökningsrätt,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU10,7,Ersättningsrätt samt insolvens- och utsökningsrätt,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+CU11,1,Konsumenträtt m.m.,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+CU13,1,Bostadspolitik,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+CU15,8,Planering och byggande,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+CU16,3,Hushållningen med mark- och vattenområden,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+CU16,6,Hushållningen med mark- och vattenområden,Ja,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+CU17,1,Hyresrätt m.m.,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+CU17,3,Hyresrätt m.m.,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU17,6,Hyresrätt m.m.,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+CU18,1,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+CU19,2,Information om bränsleförbrukning och koldioxidutsläpp vid marknadsföring av nya personbilar,Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+CU2,1,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+CU20,1,Åtgärder för tryggare bostadsområden,Avstår,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+CU20,2,Åtgärder för tryggare bostadsområden,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+CU20,3,Åtgärder för tryggare bostadsområden,Nej,Ja,Ja,Nej,Nej,Ja,Avstår,Ja
+CU20,4,Åtgärder för tryggare bostadsområden,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+CU23,2,Nya regler om hållbarhetsrapportering,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+CU23,3,Nya regler om hållbarhetsrapportering,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU24,1,Riksrevisionens rapport om statens hantering av markintrång,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU4,2,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+CU6,2,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU7,1,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+CU8,2,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU9,2,Familjerätt,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+CU9,6,Familjerätt,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+CU9,7,Familjerätt,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+CU9,10,Familjerätt,Ja,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+FiU1,1,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+FiU1,2,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+FiU11,1,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+FiU12,2,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+FiU2,3,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FiU20,1,Riktlinjer för den ekonomiska politiken,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+FiU21,2,Vårändringsbudget för 2024,Ja,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+FiU22,3,Finansiell stabilitet och finansmarknadsfrågor,Ja,Ja,Avstår,Ja,Nej,Ja,Ja,Ja
+FiU22,5,Finansiell stabilitet och finansmarknadsfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FiU22,8,Finansiell stabilitet och finansmarknadsfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+FiU22,10,Finansiell stabilitet och finansmarknadsfrågor,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+FiU25,1,Statlig förvaltning och statistikfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+FiU25,4,Statlig förvaltning och statistikfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FiU25,7,Statlig förvaltning och statistikfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+FiU26,1,Kommunala frågor,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+FiU26,2,Kommunala frågor,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FiU26,3,Kommunala frågor,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+FiU26,5,Kommunala frågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+FiU26,9,Kommunala frågor,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+FiU34,3,Offentlig upphandling,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+FiU34,6,Offentlig upphandling,Avstår,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FiU34,9,Offentlig upphandling,Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+FöU1,3,,Nej,Ja,Avstår,Avstår,Ja,Ja,Ja,Ja
+FöU10,2,Sveriges tillträde till vissa Natoavtal,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FöU12,2,Explosiva varor – ett nationellt tillståndsregister och kriminalisering av förstadier till brott mot tillståndsplikten,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FöU2,1,,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FöU2,2,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+FöU2,4,,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FöU2,6,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FöU2,7,,Nej,Ja,Ja,Avstår,Ja,Ja,Ja,Ja
+FöU3,1,Personalförsörjning,Avstår,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+FöU3,2,Personalförsörjning,Nej,Ja,Avstår,Ja,Avstår,Ja,Avstår,Ja
+FöU3,6,Personalförsörjning,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FöU4,1,Militära frågor,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+FöU4,2,Militära frågor,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+FöU4,3,Militära frågor,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FöU4,4,Militära frågor,Ja,Ja,Avstår,Ja,Avstår,Ja,Nej,Ja
+FöU4,6,Militära frågor,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FöU5,2,Integritetsskydd vid signalspaning i försvarsunderrättelseverksamhet,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+FöU5,3,Integritetsskydd vid signalspaning i försvarsunderrättelseverksamhet,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+FöU6,1,,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+FöU6,5,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+FöU6,10,,Avstår,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+FöU7,1,Samhällets krisberedskap,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+FöU7,4,Samhällets krisberedskap,Nej,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+FöU8,2,Finansiering av kommuners medverkan i frågor om slutförvar,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+FöU8,3,Finansiering av kommuners medverkan i frågor om slutförvar,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU11,1,,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU12,1,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU12,3,,Ja,Ja,Ja,Avstår,Nej,Ja,Ja,Ja
+JuU12,5,,Ja,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+JuU12,7,,Nej,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+JuU13,1,Säkerhetszoner,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU13,5,Säkerhetszoner,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+JuU13,6,Säkerhetszoner,Avstår,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+JuU14,1,,Ja,Ja,Nej,Ja,Nej,Ja,Ja,Ja
+JuU14,10,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU15,1,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+JuU15,2,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+JuU16,2,Polisfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+JuU16,4,Polisfrågor,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+JuU16,5,Polisfrågor,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+JuU16,16,Polisfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+JuU16,19,Polisfrågor,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+JuU17,10,Kriminalvårdsfrågor,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU17,14,Kriminalvårdsfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+JuU17,16,Kriminalvårdsfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU18,3,Våldsbrott och brottsoffer,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU18,24,Våldsbrott och brottsoffer,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU18,26,Våldsbrott och brottsoffer,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU18,31,Våldsbrott och brottsoffer,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU19,4,Unga lagöverträdare,Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+JuU19,7,Unga lagöverträdare,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU2,2,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU20,2,Straffrättsliga frågor,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+JuU20,3,Straffrättsliga frågor,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU21,1,Processrättsliga frågor,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+JuU21,7,Processrättsliga frågor,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU22,1,EU:s färdplan för att bekämpa narkotikahandel och organiserad brottslighet,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU23,1,"Nationell strategi mot våldsbejakande extremism och terrorism – förebygga, förhindra, skydda och hantera",Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU23,2,"Nationell strategi mot våldsbejakande extremism och terrorism – förebygga, förhindra, skydda och hantera",Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+JuU24,1,Preventiva tvångsmedel för att förebygga och förhindra allvarliga brott,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU24,2,Preventiva tvångsmedel för att förebygga och förhindra allvarliga brott,Ja,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+JuU24,4,Preventiva tvångsmedel för att förebygga och förhindra allvarliga brott,Ja,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+JuU24,7,Preventiva tvångsmedel för att förebygga och förhindra allvarliga brott,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU26,1,Bättre möjligheter att verkställa frihetsberövanden,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU28,1,Stärkt skydd för vissa polisanställda,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU28,2,Stärkt skydd för vissa polisanställda,Nej,Ja,Ja,Avstår,Ja,Ja,Ja,Ja
+JuU29,1,Motståndskraft och handlingskraft – en nationell strategi mot organiserad brottslighet,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU29,2,Motståndskraft och handlingskraft – en nationell strategi mot organiserad brottslighet,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU29,5,Motståndskraft och handlingskraft – en nationell strategi mot organiserad brottslighet,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+JuU29,10,Motståndskraft och handlingskraft – en nationell strategi mot organiserad brottslighet,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU30,1,Subsidiaritetsprövning av kommissionens förslag till förordning om stärkt polissamarbete i fråga om människosmuggling och att stärka Europols stöd för att förebygga och motverka sådan brottslighet,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU4,2,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+JuU4,3,,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+JuU6,1,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+JuU7,1,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+JuU8,1,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+JuU9,1,,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KU12,6,Valfrågor,Nej,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+KU12,7,Valfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KU13,3,Fri- och rättigheter,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+KU13,5,Fri- och rättigheter,Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+KU13,7,Fri- och rättigheter,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+KU14,1,Riksdagens arbetsformer,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+KU14,6,Riksdagens arbetsformer,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KU15,2,Kommunala och regionala frågor,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+KU16,1,Författningsfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KU16,3,Författningsfrågor,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+KU16,4,Författningsfrågor,Avstår,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+KU16,5,Författningsfrågor,Avstår,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+KU18,1,Minoritetsfrågor,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+KU18,4,Minoritetsfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU18,6,Minoritetsfrågor,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+KU18,11,Minoritetsfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU2,2,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU2,3,,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KU2,4,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU22,3,En tydligare bestämmelse om hets mot folkgrupp,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KU3,1,,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+KU3,4,,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KU3,6,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU7,1,Likvärdiga krav på mål och riktlinjer för utförare av kommunal verksamhet,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KU8,1,Offentlig förvaltning,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+KU8,3,Offentlig förvaltning,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KU8,9,Offentlig förvaltning,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+KU9,2,"Tryck- och yttrandefrihet, massmediefrågor",Ja,Ja,Avstår,Ja,Nej,Ja,Ja,Ja
+KU9,4,"Tryck- och yttrandefrihet, massmediefrågor",Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+KU9,6,"Tryck- och yttrandefrihet, massmediefrågor",Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KrU10,1,Kultur för alla,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KrU10,3,Kultur för alla,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+KrU10,5,Kultur för alla,Avstår,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+KrU10,7,Kultur för alla,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+KrU11,1,Det kyrkliga kulturarvet,Ja,Ja,Avstår,Nej,Nej,Ja,Nej,Ja
+KrU11,2,Det kyrkliga kulturarvet,Nej,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+KrU11,5,Det kyrkliga kulturarvet,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+KrU2,1,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KrU2,3,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+KrU3,4,Public service och film,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+KrU4,1,Folkbildning,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+KrU4,7,Folkbildning,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KrU5,5,Kulturarv,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KrU5,7,Kulturarv,Nej,Ja,Avstår,Ja,Ja,Ja,Avstår,Ja
+KrU5,8,Kulturarv,Ja,Ja,Avstår,Avstår,Nej,Ja,Avstår,Ja
+KrU5,11,Kulturarv,Ja,Ja,Avstår,Avstår,Ja,Ja,Nej,Ja
+KrU6,1,Idrott och friluftsliv,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+KrU6,2,Idrott och friluftsliv,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+KrU6,3,Idrott och friluftsliv,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+KrU6,14,Idrott och friluftsliv,Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+KrU7,3,Statens stöd till trossamfund och civilsamhället,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KrU7,5,Statens stöd till trossamfund och civilsamhället,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+KrU7,8,Statens stöd till trossamfund och civilsamhället,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+KrU7,13,Statens stöd till trossamfund och civilsamhället,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+KrU8,1,Kultur och fritid för barn och unga,Nej,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+KrU8,2,Kultur och fritid för barn och unga,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+KrU9,8,Spelfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+KrU9,10,Spelfrågor,Ja,Ja,Avstår,Nej,Avstår,Ja,Nej,Ja
+KrU9,11,Spelfrågor,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+KrU9,13,Spelfrågor,Ja,Ja,Avstår,Ja,Nej,Ja,Avstår,Ja
+MJU10,1,Fiskeripolitik,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+MJU10,2,Fiskeripolitik,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+MJU10,3,Fiskeripolitik,Avstår,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+MJU10,9,Fiskeripolitik,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+MJU10,10,Fiskeripolitik,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+MJU11,1,Djurskydd,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+MJU11,5,Djurskydd,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+MJU11,11,Djurskydd,Nej,Ja,Avstår,Ja,Avstår,Ja,Ja,Ja
+MJU12,1,Naturvård,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+MJU12,2,Naturvård,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+MJU12,4,Naturvård,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+MJU12,18,Naturvård,Ja,Ja,Nej,Avstår,Avstår,Ja,Avstår,Ja
+MJU12,19,Naturvård,Avstår,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+MJU13,3,Övergripande miljöfrågor,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+MJU13,8,Övergripande miljöfrågor,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+MJU13,12,Övergripande miljöfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+MJU14,1,Jakt och viltvård,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+MJU14,2,Jakt och viltvård,Nej,Ja,Avstår,Ja,Ja,Ja,Ja,Ja
+MJU14,3,Jakt och viltvård,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+MJU14,9,Jakt och viltvård,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+MJU15,6,Regeringens klimathandlingsplan – hela vägen till nettonoll,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+MJU15,7,Regeringens klimathandlingsplan – hela vägen till nettonoll,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+MJU15,34,Regeringens klimathandlingsplan – hela vägen till nettonoll,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+MJU16,1,Jordbrukspolitik,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+MJU16,2,Jordbrukspolitik,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+MJU16,3,Jordbrukspolitik,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+MJU16,7,Jordbrukspolitik,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+MJU16,14,Jordbrukspolitik,Ja,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+MJU17,2,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+MJU17,6,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+MJU17,16,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+MJU17,18,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+MJU17,26,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+MJU17,28,Cirkulär och giftfri ekonomi och Riksrevisionens rapport om hantering av uttjänta solcellspaneler och vindturbinblad,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+MJU18,2,Nationell strategi och regeringens handlingsplan för klimatanpassning,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+MJU18,3,Nationell strategi och regeringens handlingsplan för klimatanpassning,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+MJU18,8,Nationell strategi och regeringens handlingsplan för klimatanpassning,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+MJU18,10,Nationell strategi och regeringens handlingsplan för klimatanpassning,Ja,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+MJU5,1,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+MJU5,2,,Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+MJU5,7,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+MJU6,3,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+MJU6,5,,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+MJU6,7,,Ja,Ja,Nej,Ja,Nej,Ja,Ja,Ja
+MJU6,9,,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+MJU7,1,,Avstår,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+MJU7,2,,Nej,Ja,Avstår,Ja,Avstår,Ja,Ja,Ja
+MJU7,5,,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+MJU7,8,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+MJU8,1,Riksrevisionens rapport om reduktionsplikten för bensin och diesel,Nej,Ja,Ja,Avstår,Ja,Ja,Ja,Ja
+MJU8,2,Riksrevisionens rapport om reduktionsplikten för bensin och diesel,Ja,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+MJU8,3,Riksrevisionens rapport om reduktionsplikten för bensin och diesel,Nej,Ja,Ja,Avstår,Nej,Ja,Nej,Ja
+MJU9,1,Livsmedelspolitik,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+MJU9,2,Livsmedelspolitik,Ja,Ja,Avstår,Nej,Avstår,Ja,Avstår,Ja
+MJU9,6,Livsmedelspolitik,Nej,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+MJU9,7,Livsmedelspolitik,Ja,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+NU1,1,,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+NU1,2,,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+NU10,1,Regelförenkling för företag,Ja,Ja,Nej,Avstår,Avstår,Ja,Ja,Ja
+NU10,2,Regelförenkling för företag,Ja,Ja,Avstår,Nej,Avstår,Ja,Nej,Ja
+NU10,3,Regelförenkling för företag,Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+NU10,5,Regelförenkling för företag,Ja,Ja,Avstår,Ja,Nej,Ja,Ja,Ja
+NU11,1,Näringspolitik,Nej,Ja,Avstår,Ja,Avstår,Ja,Ja,Ja
+NU11,2,Näringspolitik,Avstår,Ja,Ja,Nej,Nej,Ja,Avstår,Ja
+NU11,3,Näringspolitik,Ja,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+NU11,6,Näringspolitik,Nej,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+NU11,11,Näringspolitik,Ja,Ja,Avstår,Ja,Avstår,Ja,Nej,Ja
+NU12,1,Regional utveckling,Nej,Ja,Avstår,Ja,Ja,Ja,Ja,Ja
+NU12,3,Regional utveckling,Ja,Ja,Avstår,Nej,Avstår,Ja,Avstår,Ja
+NU13,1,Handelspolitik,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+NU13,15,Handelspolitik,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+NU13,16,Handelspolitik,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+NU13,21,Handelspolitik,Ja,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+NU14,1,Energipolitikens långsiktiga inriktning,Avstår,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+NU14,2,Energipolitikens långsiktiga inriktning,Nej,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+NU14,3,Energipolitikens långsiktiga inriktning,Nej,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+NU14,6,Energipolitikens långsiktiga inriktning,Avstår,Ja,Nej,Avstår,Avstår,Ja,Avstår,Ja
+NU14,10,Energipolitikens långsiktiga inriktning,Avstår,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+NU15,2,En tydligare process för tillståndsprövning av elnät,Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+NU17,1,Natura 2000-tillstånd i samband med ansökan om bearbetningskoncession enligt minerallagen,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+NU17,2,Natura 2000-tillstånd i samband med ansökan om bearbetningskoncession enligt minerallagen,Ja,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+NU19,2,Strategi för företag i kulturella och kreativa branscher,Avstår,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+NU19,3,Strategi för företag i kulturella och kreativa branscher,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+NU19,7,Strategi för företag i kulturella och kreativa branscher,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+NU4,2,,Ja,Ja,Nej,Ja,Nej,Ja,Ja,Ja
+NU4,6,,Ja,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+NU4,7,,Nej,Ja,Avstår,Ja,Ja,Ja,Ja,Ja
+NU4,13,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+NU5,1,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+NU5,2,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+NU5,4,,Avstår,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+NU6,2,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+NU6,3,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+NU6,4,,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+NU7,1,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+NU7,4,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+NU7,6,,Avstår,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+NU7,9,,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+NU8,5,,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+NU8,6,,Ja,Ja,Avstår,Avstår,Nej,Ja,Avstår,Ja
+NU8,9,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+NU8,11,,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+NU9,1,Elmarknadsfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+NU9,2,Elmarknadsfrågor,Avstår,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+NU9,9,Elmarknadsfrågor,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+SfU1,1,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SfU10,1,Socialavgifter,Ja,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+SfU10,2,Socialavgifter,Ja,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+SfU11,1,Arbetskraftsinvandring,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SfU11,2,Arbetskraftsinvandring,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+SfU11,4,Arbetskraftsinvandring,Avstår,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+SfU12,1,Ekonomisk familjepolitik,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+SfU12,3,Ekonomisk familjepolitik,Avstår,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+SfU12,6,Ekonomisk familjepolitik,Nej,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SfU12,12,Ekonomisk familjepolitik,Ja,Ja,Avstår,Nej,Avstår,Ja,Ja,Ja
+SfU13,1,Socialförsäkringsfrågor,Ja,Ja,Avstår,Avstår,Nej,Ja,Avstår,Ja
+SfU13,13,Socialförsäkringsfrågor,Ja,Ja,Avstår,Nej,Avstår,Ja,Avstår,Ja
+SfU13,15,Socialförsäkringsfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Avstår,Ja
+SfU13,19,Socialförsäkringsfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SfU14,4,Migrationsfrågor,Avstår,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+SfU14,5,Migrationsfrågor,Ja,Ja,Nej,Avstår,Avstår,Ja,Avstår,Ja
+SfU14,8,Migrationsfrågor,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SfU14,12,Migrationsfrågor,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SfU15,1,Ändringar i medborgarskapslagen,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SfU15,3,Ändringar i medborgarskapslagen,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SfU16,1,Ersättning för höga sjuklönekostnader upphör,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SfU16,3,Ersättning för höga sjuklönekostnader upphör,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SfU5,1,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SfU5,2,,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SfU6,1,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SfU6,2,,Ja,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+SfU8,1,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SfU8,3,,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SkU11,4,Inkomstskatt,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+SkU11,7,Inkomstskatt,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+SkU11,9,Inkomstskatt,Nej,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+SkU11,12,Inkomstskatt,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SkU11,16,Inkomstskatt,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SkU11,19,Inkomstskatt,Avstår,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+SkU12,2,"Företag, kapital och fastighet",Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+SkU12,3,"Företag, kapital och fastighet",Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SkU12,4,"Företag, kapital och fastighet",Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SkU12,10,"Företag, kapital och fastighet",Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SkU12,14,"Företag, kapital och fastighet",Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SkU13,2,Punktskatt och tull,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SkU13,4,Punktskatt och tull,Ja,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+SkU13,5,Punktskatt och tull,Ja,Ja,Avstår,Ja,Avstår,Ja,Nej,Ja
+SkU13,7,Punktskatt och tull,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SkU14,1,Mervärdesskatt,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+SkU14,5,Mervärdesskatt,Ja,Ja,Avstår,Nej,Avstår,Ja,Ja,Ja
+SkU14,6,Mervärdesskatt,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SkU15,1,Skatteförfarande och folkbokföring,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+SkU15,5,Skatteförfarande och folkbokföring,Avstår,Ja,Ja,Nej,Avstår,Ja,Avstår,Ja
+SkU15,9,Skatteförfarande och folkbokföring,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SkU15,10,Skatteförfarande och folkbokföring,Ja,Ja,Avstår,Avstår,Nej,Ja,Ja,Ja
+SkU15,12,Skatteförfarande och folkbokföring,Ja,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+SkU19,2,Höjd spelskatt,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SkU24,1,Tillfälligt höjt tak för rotavdraget,Ja,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+SkU28,1,Riksrevisionens rapport Svart på vitt – rotavdragets kostnader och effekter,Nej,Ja,Ja,Avstår,Ja,Ja,Ja,Ja
+SkU6,2,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SkU6,3,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SkU7,3,,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SkU8,2,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SoU11,1,"Alkohol, narkotika, dopning, tobak och spel",Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU11,2,"Alkohol, narkotika, dopning, tobak och spel",Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU11,6,"Alkohol, narkotika, dopning, tobak och spel",Ja,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+SoU11,8,"Alkohol, narkotika, dopning, tobak och spel",Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU11,12,"Alkohol, narkotika, dopning, tobak och spel",Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU12,1,,Ja,Ja,Avstår,Ja,Nej,Ja,Nej,Ja
+SoU12,7,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU12,12,,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU12,14,,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SoU13,3,Stöd till personer med funktionsnedsättning,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU13,4,Stöd till personer med funktionsnedsättning,Ja,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+SoU13,7,Stöd till personer med funktionsnedsättning,Ja,Nej,Ja,Ja,Ja,Nej,Ja,Nej
+SoU13,8,Stöd till personer med funktionsnedsättning,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SoU13,14,Stöd till personer med funktionsnedsättning,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU13,16,Stöd till personer med funktionsnedsättning,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU14,2,Hälso- och sjukvårdens organisation,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SoU14,11,Hälso- och sjukvårdens organisation,Avstår,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+SoU14,12,Hälso- och sjukvårdens organisation,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU15,2,Folkhälsa,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+SoU15,4,Folkhälsa,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU15,6,Folkhälsa,Ja,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU15,7,Folkhälsa,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+SoU15,9,Folkhälsa,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+SoU15,11,Folkhälsa,Avstår,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+SoU16,1,Prioriteringar inom hälso- och sjukvården,Nej,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+SoU16,2,Prioriteringar inom hälso- och sjukvården,Avstår,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+SoU16,3,Prioriteringar inom hälso- och sjukvården,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+SoU16,5,Prioriteringar inom hälso- och sjukvården,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SoU16,6,Prioriteringar inom hälso- och sjukvården,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU17,2,Socialtjänstens arbete,Avstår,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SoU17,3,Socialtjänstens arbete,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SoU17,6,Socialtjänstens arbete,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU17,8,Socialtjänstens arbete,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU17,12,Socialtjänstens arbete,Avstår,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+SoU18,4,Barn och unga inom socialtjänsten,Nej,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+SoU18,6,Barn och unga inom socialtjänsten,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU18,13,Barn och unga inom socialtjänsten,Avstår,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU18,14,Barn och unga inom socialtjänsten,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+SoU19,5,Socialtjänstens ansvar för våldsutsatta m.m.,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+SoU19,7,Socialtjänstens ansvar för våldsutsatta m.m.,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+SoU2,1,,Ja,Ja,Ja,Nej,Nej,Ja,Ja,Ja
+SoU2,2,,Ja,Ja,Ja,Avstår,Avstår,Ja,Nej,Ja
+SoU20,1,Äldreomsorg,Nej,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU20,3,Äldreomsorg,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU20,4,Äldreomsorg,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU20,13,Äldreomsorg,Nej,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU21,3,"Kompetensförsörjning, e-hälsa och beredskap",Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU21,4,"Kompetensförsörjning, e-hälsa och beredskap",Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU21,6,"Kompetensförsörjning, e-hälsa och beredskap",Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SoU21,9,"Kompetensförsörjning, e-hälsa och beredskap",Ja,Ja,Ja,Avstår,Nej,Ja,Nej,Ja
+SoU21,12,"Kompetensförsörjning, e-hälsa och beredskap",Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU22,1,Förbättrade möjligheter att ändra kön,Ja,Ja,Nej,Ja,Ja,Nej,Ja,Ja
+SoU24,1,Ett utvidgat utreseförbud för barn,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+SoU24,4,Ett utvidgat utreseförbud för barn,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU25,1,Begränsningar och kontroll i fråga om elektroniska kommunikationstjänster och besök på särskilda ungdomshem,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SoU25,3,Begränsningar och kontroll i fråga om elektroniska kommunikationstjänster och besök på särskilda ungdomshem,Nej,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU25,13,Begränsningar och kontroll i fråga om elektroniska kommunikationstjänster och besök på särskilda ungdomshem,Ja,Ja,Ja,Ja,Nej,Ja,Avstår,Ja
+SoU26,1,Det schabloniserade föräldraavdraget,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU3,2,,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+SoU3,3,,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU5,1,,Ja,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+SoU5,2,,Ja,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+SoU6,2,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SoU6,5,,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+SoU6,10,,Nej,Ja,Ja,Ja,Nej,Ja,Nej,Ja
+SoU6,18,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+SoU6,24,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU7,1,Riksrevisionens rapport om det nationella smittskyddet,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+SoU8,1,Riksrevisionens rapport om statens arbete med väntetider i vården,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+SoU8,2,Riksrevisionens rapport om statens arbete med väntetider i vården,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+SoU8,3,Riksrevisionens rapport om statens arbete med väntetider i vården,Ja,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+SoU9,4,Genomförande av nya krav på upphettade tobaksvaror,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+SoU9,6,Genomförande av nya krav på upphettade tobaksvaror,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+TU12,1,Cykelfrågor,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+TU12,3,Cykelfrågor,Ja,Ja,Avstår,Ja,Nej,Ja,Avstår,Ja
+TU12,5,Cykelfrågor,Ja,Ja,Nej,Ja,Avstår,Ja,Avstår,Ja
+TU13,1,Vägtrafik- och fordonsfrågor,Ja,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+TU13,5,Vägtrafik- och fordonsfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+TU13,8,Vägtrafik- och fordonsfrågor,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+TU13,11,Vägtrafik- och fordonsfrågor,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+TU14,1,Luftfartsfrågor,Ja,Ja,Avstår,Ja,Nej,Ja,Avstår,Ja
+TU14,3,Luftfartsfrågor,Nej,Ja,Avstår,Avstår,Ja,Ja,Avstår,Ja
+TU14,7,Luftfartsfrågor,Nej,Ja,Avstår,Ja,Avstår,Ja,Avstår,Ja
+TU14,13,Luftfartsfrågor,Ja,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+TU16,6,Digitaliserings- och postfrågor,Avstår,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+TU16,7,Digitaliserings- och postfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+TU16,9,Digitaliserings- och postfrågor,Avstår,Ja,Avstår,Ja,Nej,Ja,Avstår,Ja
+TU17,2,Sjöfartsfrågor,Avstår,Ja,Nej,Avstår,Avstår,Ja,Ja,Ja
+TU17,4,Sjöfartsfrågor,Nej,Ja,Avstår,Ja,Avstår,Ja,Ja,Ja
+TU17,6,Sjöfartsfrågor,Ja,Ja,Avstår,Avstår,Nej,Ja,Ja,Ja
+TU17,9,Sjöfartsfrågor,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+TU17,10,Sjöfartsfrågor,Avstår,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+TU18,1,Infrastrukturfrågor,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+TU18,2,Infrastrukturfrågor,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+TU18,5,Infrastrukturfrågor,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+TU18,14,Infrastrukturfrågor,Avstår,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+TU18,23,Infrastrukturfrågor,Nej,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+TU19,1,Flygplatshavarnas kostnader för säkerhetskontroller,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+TU5,1,,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+TU5,6,,Ja,Ja,Avstår,Nej,Avstår,Ja,Avstår,Ja
+TU5,8,,Avstår,Ja,Nej,Ja,Ja,Ja,Avstår,Ja
+TU6,1,,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+TU6,2,,Nej,Ja,Avstår,Ja,Avstår,Ja,Avstår,Ja
+TU7,3,Trafiksäkerhet,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+TU7,7,Trafiksäkerhet,Nej,Ja,Avstår,Ja,Ja,Ja,Ja,Ja
+TU7,9,Trafiksäkerhet,Avstår,Ja,Avstår,Ja,Nej,Ja,Ja,Ja
+TU9,1,Yrkestrafik och taxi,Nej,Ja,Ja,Ja,Avstår,Ja,Ja,Ja
+TU9,5,Yrkestrafik och taxi,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+TU9,7,Yrkestrafik och taxi,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+TU9,8,Yrkestrafik och taxi,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+TU9,10,Yrkestrafik och taxi,Nej,Ja,Avstår,Ja,Ja,Ja,Ja,Ja
+TU9,11,Yrkestrafik och taxi,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+TU9,14,Yrkestrafik och taxi,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+UFöU1,3,Avtal om försvarssamarbete med Amerikas förenta stater,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+UFöU1,4,Avtal om försvarssamarbete med Amerikas förenta stater,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+UFöU1,5,Avtal om försvarssamarbete med Amerikas förenta stater,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UFöU1,6,Avtal om försvarssamarbete med Amerikas förenta stater,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+UU10,1,Verksamheten i Europeiska unionen under 2023,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+UU10,2,Verksamheten i Europeiska unionen under 2023,Nej,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+UU10,3,Verksamheten i Europeiska unionen under 2023,Ja,Nej,Ja,Ja,Ja,Nej,Ja,Nej
+UU10,6,Verksamheten i Europeiska unionen under 2023,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU11,1,Vissa säkerhetspolitiska frågor,Avstår,Ja,Avstår,Nej,Avstår,Ja,Nej,Ja
+UU11,2,Vissa säkerhetspolitiska frågor,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+UU11,6,Vissa säkerhetspolitiska frågor,Nej,Ja,Avstår,Ja,Avstår,Ja,Ja,Ja
+UU11,7,Vissa säkerhetspolitiska frågor,Avstår,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU12,1,Organisationen för säkerhet och samarbete i Europa (OSSE),Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UU12,2,Organisationen för säkerhet och samarbete i Europa (OSSE),Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU14,1,Mänskliga rättigheter,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+UU14,2,Mänskliga rättigheter,Nej,Ja,Ja,Nej,Nej,Ja,Ja,Ja
+UU14,3,Mänskliga rättigheter,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+UU14,4,Mänskliga rättigheter,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UU15,1,Mellanöstern och Nordafrika,Ja,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+UU15,4,Mellanöstern och Nordafrika,Avstår,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU15,6,Mellanöstern och Nordafrika,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU15,7,Mellanöstern och Nordafrika,Nej,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+UU15,8,Mellanöstern och Nordafrika,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UU15,10,Mellanöstern och Nordafrika,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+UU2,2,,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+UU3,1,Vitbok om exportkontroll av produkter med dubbla användningsområden,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UU4,1,Nordiskt samarbete inklusive Arktis,Ja,Ja,Nej,Avstår,Avstår,Ja,Ja,Ja
+UU4,2,Nordiskt samarbete inklusive Arktis,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UU4,5,Nordiskt samarbete inklusive Arktis,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+UU4,6,Nordiskt samarbete inklusive Arktis,Ja,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+UU4,7,Nordiskt samarbete inklusive Arktis,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+UU5,1,,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+UU7,1,Internationella relationer m.m.,Nej,Ja,Ja,Ja,Avstår,Ja,Avstår,Ja
+UU7,7,Internationella relationer m.m.,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+UU8,1,Internationellt bistånd,Nej,Ja,Ja,Avstår,Avstår,Ja,Avstår,Ja
+UU9,1,Strategisk exportkontroll 2023 – krigsmateriel och produkter med dubbla användningsområden,Ja,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+UU9,2,Strategisk exportkontroll 2023 – krigsmateriel och produkter med dubbla användningsområden,Ja,Ja,Nej,Avstår,Ja,Ja,Avstår,Ja
+UbU10,2,Grundläggande om utbildning,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU10,6,Grundläggande om utbildning,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UbU10,8,Grundläggande om utbildning,Ja,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU10,10,Grundläggande om utbildning,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+UbU10,12,Grundläggande om utbildning,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU11,3,Lärare och elever,Ja,Ja,Avstår,Nej,Avstår,Ja,Ja,Ja
+UbU11,4,Lärare och elever,Ja,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+UbU11,8,Lärare och elever,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+UbU11,10,Lärare och elever,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+UbU11,11,Lärare och elever,Nej,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+UbU12,1,,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+UbU12,4,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UbU12,5,,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+UbU12,7,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU12,8,,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UbU13,1,Vuxenutbildning,Avstår,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+UbU13,2,Vuxenutbildning,Ja,Ja,Avstår,Nej,Ja,Ja,Avstår,Ja
+UbU13,3,Vuxenutbildning,Avstår,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+UbU13,5,Vuxenutbildning,Nej,Ja,Ja,Ja,Ja,Ja,Ja,Ja
+UbU13,7,Vuxenutbildning,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UbU14,1,Högskolan,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU14,2,Högskolan,Ja,Ja,Ja,Ja,Ja,Ja,Nej,Ja
+UbU14,5,Högskolan,Ja,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+UbU14,6,Högskolan,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+UbU14,7,Högskolan,Ja,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UbU14,8,Högskolan,Ja,Ja,Ja,Avstår,Nej,Ja,Ja,Ja
+UbU14,12,Högskolan,Ja,Ja,Avstår,Nej,Ja,Ja,Nej,Ja
+UbU15,1,Forskning,Nej,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+UbU15,2,Forskning,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+UbU15,4,Forskning,Avstår,Ja,Avstår,Nej,Ja,Ja,Ja,Ja
+UbU15,5,Forskning,Ja,Ja,Avstår,Ja,Ja,Ja,Nej,Ja
+UbU15,6,Forskning,Avstår,Ja,Nej,Ja,Ja,Ja,Ja,Ja
+UbU16,1,Att lättare få läsa i snabbare takt och på en högre nivå,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+UbU16,3,Att lättare få läsa i snabbare takt och på en högre nivå,Nej,Ja,Ja,Nej,Ja,Ja,Ja,Ja
+UbU16,4,Att lättare få läsa i snabbare takt och på en högre nivå,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU16,6,Att lättare få läsa i snabbare takt och på en högre nivå,Ja,Ja,Ja,Ja,Avstår,Ja,Nej,Ja
+UbU16,7,Att lättare få läsa i snabbare takt och på en högre nivå,Ja,Ja,Ja,Ja,Nej,Ja,Ja,Ja
+UbU2,1,,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UbU5,2,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU6,2,,Nej,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+UbU6,3,,Ja,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+UbU6,4,,Nej,Ja,Ja,Avstår,Ja,Ja,Nej,Ja
+UbU7,1,,Nej,Ja,Ja,Avstår,Ja,Ja,Avstår,Ja
+UbU7,3,,Ja,Ja,Nej,Ja,Avstår,Ja,Ja,Ja
+UbU8,1,,Nej,Ja,Ja,Nej,Avstår,Ja,Ja,Ja
+UbU8,2,,Avstår,Ja,Nej,Avstår,Ja,Ja,Ja,Ja
+UbU8,3,,Ja,Ja,Ja,Nej,Ja,Ja,Avstår,Ja
+UbU8,5,,Nej,Ja,Ja,Nej,Ja,Ja,Nej,Ja
+UbU9,1,Övergripande skolfrågor,Avstår,Ja,Ja,Avstår,Nej,Ja,Avstår,Ja
+UbU9,14,Övergripande skolfrågor,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UbU9,18,Övergripande skolfrågor,Nej,Ja,Ja,Nej,Avstår,Ja,Nej,Ja
+UbU9,21,Övergripande skolfrågor,Nej,Ja,Ja,Nej,Nej,Ja,Nej,Ja
+UbU9,24,Övergripande skolfrågor,Ja,Ja,Nej,Ja,Avstår,Ja,Avstår,Ja
