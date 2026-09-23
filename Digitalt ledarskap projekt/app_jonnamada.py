@@ -175,6 +175,31 @@ def convert_historical(frame):
         records.append({"name": str(row.get("Pollen")), "level": str(level) if level is not None else None})
     return records
 
+
+def is_pollen_out_of_season(target_date):
+    """Air Aware project rule for Sweden's quiet pollen period."""
+    return target_date.month in {9, 10, 11, 12, 1}
+
+
+def out_of_season_pollen_records():
+    """Give selectable pollen types a Good status outside the season."""
+    pollen_names = [
+        "Al",
+        "Alm",
+        "Björk",
+        "Bok",
+        "Ek",
+        "Hassel",
+        "Sälg/vide",
+        "Gräs",
+        "Gråbo",
+        "Ambrosia",
+    ]
+    return [
+        {"name": name, "level": "None detected"}
+        for name in pollen_names
+    ]
+
 # Header and first-visit experience
 show_welcome_if_needed()
 preferences = render_sidebar_preferences()
@@ -204,15 +229,36 @@ comparison_date = previous_year_safe(target_date)
 pollen_day, used_date, approximate = select_pollen_benchmark(historical_frame, comparison_date)
 historical_records = convert_historical(pollen_day)
 live_records, pollen_info = fetch_live_pollen(latitude, longitude, target_date)
-pollen_records = live_records or historical_records
-pollen_mode = "Current regional forecast" if live_records else "Historical Gothenburg fallback"
+
+if live_records:
+    pollen_records = live_records
+    pollen_mode = "Current regional forecast"
+elif is_pollen_out_of_season(target_date):
+    pollen_records = out_of_season_pollen_records()
+    pollen_mode = "Out of season"
+else:
+    pollen_records = historical_records
+    pollen_mode = "Historical Gothenburg fallback"
 
 if air_fallback: st.warning("Live air-quality data is unavailable; clearly marked fallback values are being used.")
 if weather.get("fallback"): st.warning("Live weather data is unavailable; estimated fallback values are being used.")
 if live_records:
     st.success(f"Using the current pollen forecast for {pollen_info.get('region')} ({pollen_info.get('distance_km', 0):.0f} km from the selected location).")
+elif pollen_mode == "Out of season":
+    st.info(
+        "Pollen is currently out of season. Levels are expected to be "
+        "very low and regular measurements may be paused."
+    )
+elif historical_records:
+    st.warning(
+        f"{pollen_info.get('reason')} Using the historical Gothenburg "
+        "benchmark instead."
+    )
 else:
-    st.warning(f"{pollen_info.get('reason')} Using the historical Gothenburg benchmark instead.")
+    st.warning(
+        f"{pollen_info.get('reason')} No suitable historical fallback "
+        "was found."
+    )
 
 result = describe_overall_conditions(
     air_data=air, pollen_records=pollen_records, weather_data=weather,
@@ -225,22 +271,16 @@ show_result_dialog_if_requested(result)
 st.markdown("### Your selected condition areas")
 render_category_sections(result, air, weather, pollen_records)
 
-with st.expander("📍 Location and data coverage map"):
-    render_location_map(selected_city, latitude, longitude, pollen_info)
+st.divider()
+render_location_map(selected_city, latitude, longitude, pollen_info)
 
-with st.expander("📈 48-hour air-quality forecast"):
-    choices = [name for name in ("european_aqi", "pm2_5", "pm10", "nitrogen_dioxide") if name in hourly.columns]
-    if not hourly.empty and "time" in hourly and choices:
-        metric = st.radio("Measurement", choices, format_func=lambda x: {"european_aqi": "Overall pollution index", "pm2_5": "PM2.5 particles", "pm10": "PM10 particles", "nitrogen_dioxide": "Nitrogen dioxide"}[x], horizontal=True)
-        st.plotly_chart(px.line(hourly, x="time", y=metric, labels={"time": "Time", metric: "Value"}), use_container_width=True)
-    else: st.info("The 48-hour forecast is unavailable.")
+st.divider()
+st.subheader("48-hour air-quality forecast")
+choices = [name for name in ("european_aqi", "pm2_5", "pm10", "nitrogen_dioxide") if name in hourly.columns]
+if not hourly.empty and "time" in hourly and choices:
+    metric = st.radio("Measurement", choices, format_func=lambda x: {"european_aqi": "Overall pollution index", "pm2_5": "PM2.5 particles", "pm10": "PM10 particles", "nitrogen_dioxide": "Nitrogen dioxide"}[x], horizontal=True)
+    st.plotly_chart(px.line(hourly, x="time", y=metric, labels={"time": "Time", metric: "Value"}), use_container_width=True)
+else:
+    st.info("The 48-hour forecast is unavailable.")
 
-with st.expander("🌾 Historical pollen comparison"):
-    st.caption(f"Current recommendation source: {pollen_mode}. Historical file: {pollen_filename}.")
-    if not pollen_day.empty:
-        if approximate: st.info(f"Closest historical observation to {comparison_date}: {used_date}.")
-        figure = px.bar(pollen_day.sort_values("Level_Value"), x="Level_Value", y="Pollen", orientation="h", color="Level_Value", range_color=[0, 6], text="Level_Value", labels={"Level_Value": "Pollen level", "Pollen": "Species"})
-        figure.update_layout(height=320, coloraxis_showscale=False); st.plotly_chart(figure, use_container_width=True)
-    else: st.info("No suitable historical observation was found.")
-
-st.caption("Air and weather: Open-Meteo · Pollen: Pollenrapporten or clearly marked historical fallback · Air Aware does not replace medical advice.")
+st.caption("Air and weather: Open-Meteo · Pollen: current regional forecast, out-of-season status, or clearly marked historical fallback · Air Aware does not replace medical advice.")

@@ -89,49 +89,95 @@ def render_overall_result(result, city=None, region=None):
     reason = cause_text + (f" — {detail_text}" if detail_text else "")
     advice = get_personalized_advice(result)
     location = ", ".join(value for value in (city, region) if value)
-    st.markdown(f"""<div style='background:{config['color']}12;border:2px solid {config['color']};border-left:10px solid {config['color']};padding:22px;border-radius:14px'>
-    <div style='color:#475569;font-size:1.05rem;font-weight:600'>{html.escape(location)}</div>
-    <div style='font-size:2rem;font-weight:800;color:{config['color']}'>{config['icon']} {html.escape(config['short_label'])}</div>
-    <p>{html.escape(config['message'])}</p><p><b>What to do:</b> {html.escape(advice)}</p></div>""", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown(
+            f"<div style='height:7px;background:{config['color']};"
+            "border-radius:8px;margin:-8px 0 14px 0'></div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(f"**{html.escape(location)}**")
+        st.markdown(
+            f"<div style='font-size:2rem;font-weight:800;color:{config['color']}'>"
+            f"{config['icon']} {html.escape(config['short_label'])}</div>",
+            unsafe_allow_html=True,
+        )
+        st.write(config["message"])
+        st.markdown(f"**Recommendation:** {advice}")
 
-    with st.expander("Why am I seeing this result?", expanded=False):
-        st.write(f"The main reason is: **{reason}**")
-        selected_names = {
-            "air_quality": "Air quality and particles",
-            "gases": "Gases",
-            "pollen": "Pollen",
-            "weather": "Weather conditions",
-        }
-        selected = result.get("selected_categories", [])
-        if selected:
-            st.caption(
-                "Included in this result: "
-                + ", ".join(selected_names.get(item, item) for item in selected)
-            )
+        with st.expander("Why am I seeing this result?", expanded=False):
+            st.write(f"The main reason is: **{reason}**")
+            selected_names = {
+                "air_quality": "Air quality and particles",
+                "gases": "Gases",
+                "pollen": "Pollen",
+                "weather": "Weather conditions",
+            }
+            selected = result.get("selected_categories", [])
+            if selected:
+                st.caption(
+                    "Included in this result: "
+                    + ", ".join(selected_names.get(item, item) for item in selected)
+                )
 
 def render_category_sections(result, air, weather, pollen_records):
     groups = result.get("groups", {})
     cards = st.columns(max(1, len(groups)))
     icons = {"Air quality": "🌫️", "Gases": "🏭", "Pollen": "🌿", "Weather": "🌦️"}
-    for column, (name, group) in zip(cards, groups.items()):
-        with column: _status_card(name, group.get("severity"), "Click the section below for details", icons.get(name))
-    st.markdown("### Explore your conditions")
     raw_values = {"PM2.5": (air.get("pm2_5"), "µg/m³"), "PM10": (air.get("pm10"), "µg/m³"), "NO₂": (air.get("nitrogen_dioxide"), "µg/m³"), "O₃": (air.get("ozone"), "µg/m³"), "SO₂": (air.get("sulphur_dioxide"), "µg/m³"), "CO": (air.get("carbon_monoxide"), "µg/m³"), "Wind": (weather.get("wind_speed"), "m/s"), "Precipitation": (weather.get("precipitation"), "mm"), "Humidity": (weather.get("humidity"), "%")}
-    for name, group in groups.items():
-        with st.expander(f"{icons.get(name, 'ℹ️')} {name} — {get_status_config(group.get('severity'))['short_label']}"):
-            if name == "Air quality":
-                st.caption("Overall pollution index summarises the strongest air-pollution concern. Lower is cleaner. It does not include pollen or weather.")
-                st.write(f"Overall pollution index: **{air.get('european_aqi', 'Unavailable')}**")
-            for item, severity in group.get("items", {}).items():
-                config = get_status_config(severity); raw, unit = raw_values.get(item, (None, ""))
-                if name == "Pollen":
-                    match = next((x for x in pollen_records if x.get("name") == item), {}); raw_text = match.get("level", "Unavailable")
-                else:
-                    raw_text = "Unavailable" if raw is None else f"{float(raw):.1f} {unit}".strip()
-                st.markdown(f"**{config['icon']} {item}: <span style='color:{config['color']}'>{config['short_label']}</span>** · {raw_text}", unsafe_allow_html=True)
-                if item in MEASUREMENT_INFO: st.caption(MEASUREMENT_INFO[item])
-            if name == "Weather":
-                st.caption(f"Wind direction: {group.get('wind_direction', 'Unavailable')} · Humidity feels: {group.get('humidity_description', 'Unavailable')}")
+    for column, (name, group) in zip(cards, groups.items()):
+        group_config = get_status_config(group.get("severity"))
+        popover_label = (
+            f"{icons.get(name, 'ℹ️')} {name} · "
+            f"{group_config['short_label']}"
+        )
+        with column:
+            with st.popover(popover_label, use_container_width=True):
+                st.markdown(
+                    f"### {group_config['icon']} {name}: "
+                    f"{group_config['short_label']}"
+                )
+                st.caption(group_config["message"])
+
+                if name == "Air quality":
+                    st.caption("Overall pollution index summarises the strongest air-pollution concern. Lower is cleaner. It does not include pollen or weather.")
+                    st.write(f"Overall pollution index: **{air.get('european_aqi', 'Unavailable')}**")
+
+                for item, severity in group.get("items", {}).items():
+                    config = get_status_config(severity)
+                    raw, unit = raw_values.get(item, (None, ""))
+
+                    if name == "Pollen":
+                        match = next(
+                            (
+                                value
+                                for value in pollen_records
+                                if value.get("name") == item
+                            ),
+                            {},
+                        )
+                        raw_text = match.get("level", "Unavailable")
+                    else:
+                        raw_text = (
+                            "Unavailable"
+                            if raw is None
+                            else f"{float(raw):.1f} {unit}".strip()
+                        )
+
+                    st.markdown(
+                        f"**{config['icon']} {item}: "
+                        f"<span style='color:{config['color']}'>"
+                        f"{config['short_label']}</span>** · {raw_text}",
+                        unsafe_allow_html=True,
+                    )
+
+                    if item in MEASUREMENT_INFO:
+                        st.caption(MEASUREMENT_INFO[item])
+
+                if name == "Weather":
+                    st.caption(
+                        f"Wind direction: {group.get('wind_direction', 'Unavailable')} · "
+                        f"Humidity feels: {group.get('humidity_description', 'Unavailable')}"
+                    )
 
 @st.dialog("Your personalized outdoor conditions", width="large")
 def _result_dialog(result):

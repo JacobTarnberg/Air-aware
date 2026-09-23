@@ -3,7 +3,7 @@ import unicodedata
 STATUS_CONFIG = {
     0: {"label": "Good", "short_label": "Good", "color": "#22C55E", "icon": "✅", "message": "Conditions are suitable for most people."},
     1: {"label": "Moderate", "short_label": "Moderate", "color": "#EAB308", "icon": "ℹ️", "message": "Conditions are generally acceptable."},
-    2: {"label": "Dangerous for sensitive people", "short_label": "Sensitive groups: caution", "color": "#F97316", "icon": "⚠️", "message": "Sensitive people may experience effects."},
+    2: {"label": "Dangerous for sensitive people", "short_label": "Caution", "color": "#F97316", "icon": "⚠️", "message": "Sensitive people may experience effects."},
     3: {"label": "Poor", "short_label": "Poor", "color": "#EF4444", "icon": "⛔", "message": "Health effects are possible. Consider precautions."},
     4: {"label": "Hazardous", "short_label": "Hazardous", "color": "#7C3AED", "icon": "🚫", "message": "Serious conditions. Strong precautions are advised."},
     None: {"label": "Unavailable", "short_label": "Unavailable", "color": "#64748B", "icon": "❓", "message": "There is not enough data for an assessment."},
