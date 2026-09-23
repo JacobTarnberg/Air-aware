@@ -1,6 +1,6 @@
 import streamlit as st
 
-from sample_data import air_data, pollen_data
+from sample_data_jonnamada import air_data, pollen_data
 from recommendations import get_recommendation, get_pollen_status
 
 result = get_recommendation(air_data, pollen_data)
