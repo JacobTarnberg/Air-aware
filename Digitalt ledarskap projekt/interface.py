@@ -124,60 +124,114 @@ def render_category_sections(result, air, weather, pollen_records):
     cards = st.columns(max(1, len(groups)))
     icons = {"Air quality": "🌫️", "Gases": "🏭", "Pollen": "🌿", "Weather": "🌦️"}
     raw_values = {"PM2.5": (air.get("pm2_5"), "µg/m³"), "PM10": (air.get("pm10"), "µg/m³"), "NO₂": (air.get("nitrogen_dioxide"), "µg/m³"), "O₃": (air.get("ozone"), "µg/m³"), "SO₂": (air.get("sulphur_dioxide"), "µg/m³"), "CO": (air.get("carbon_monoxide"), "µg/m³"), "Wind": (weather.get("wind_speed"), "m/s"), "Precipitation": (weather.get("precipitation"), "mm"), "Humidity": (weather.get("humidity"), "%")}
+
     for column, (name, group) in zip(cards, groups.items()):
         group_config = get_status_config(group.get("severity"))
-        popover_label = (
-            f"{icons.get(name, 'ℹ️')} {name} · "
-            f"{group_config['short_label']}"
+        card_slug = name.lower().replace(" ", "_")
+        card_key = f"condition_card_{card_slug}"
+        open_key = f"condition_open_{card_slug}"
+
+        if open_key not in st.session_state:
+            st.session_state[open_key] = False
+
+        st.markdown(
+            f"""
+            <style>
+            .st-key-{card_key} button {{
+                min-height: 145px;
+                width: 100%;
+                border: 1px solid #E2E8F0;
+                border-top: 8px solid {group_config['color']};
+                border-radius: 14px;
+                background: {group_config['color']}12;
+                color: #1E293B;
+                white-space: pre-wrap;
+                font-size: 1.05rem;
+                line-height: 1.6;
+                padding: 16px 10px;
+            }}
+            .st-key-{card_key} button:hover {{
+                border-color: {group_config['color']};
+                color: #0F172A;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True,
         )
+
+        arrow = "▲ Hide details" if st.session_state[open_key] else "▼ Show details"
+        card_label = (
+            f"{icons.get(name, 'ℹ️')}  **{name}**\n\n"
+            f"{group_config['icon']} {group_config['short_label']}\n\n"
+            f"{arrow}"
+        )
+
         with column:
-            with st.popover(popover_label, use_container_width=True):
-                st.markdown(
-                    f"### {group_config['icon']} {name}: "
-                    f"{group_config['short_label']}"
-                )
-                st.caption(group_config["message"])
+            if st.button(
+                card_label,
+                key=card_key,
+                use_container_width=True,
+            ):
+                st.session_state[open_key] = not st.session_state[open_key]
+                st.rerun()
 
-                if name == "Air quality":
-                    st.caption("Overall pollution index summarises the strongest air-pollution concern. Lower is cleaner. It does not include pollen or weather.")
-                    st.write(f"Overall pollution index: **{air.get('european_aqi', 'Unavailable')}**")
-
-                for item, severity in group.get("items", {}).items():
-                    config = get_status_config(severity)
-                    raw, unit = raw_values.get(item, (None, ""))
-
-                    if name == "Pollen":
-                        match = next(
-                            (
-                                value
-                                for value in pollen_records
-                                if value.get("name") == item
-                            ),
-                            {},
-                        )
-                        raw_text = match.get("level", "Unavailable")
-                    else:
-                        raw_text = (
-                            "Unavailable"
-                            if raw is None
-                            else f"{float(raw):.1f} {unit}".strip()
-                        )
-
+            if st.session_state[open_key]:
+                with st.container(border=True):
                     st.markdown(
-                        f"**{config['icon']} {item}: "
-                        f"<span style='color:{config['color']}'>"
-                        f"{config['short_label']}</span>** · {raw_text}",
-                        unsafe_allow_html=True,
+                        f"### {group_config['icon']} {name}: "
+                        f"{group_config['short_label']}"
                     )
+                    st.caption(group_config["message"])
 
-                    if item in MEASUREMENT_INFO:
-                        st.caption(MEASUREMENT_INFO[item])
+                    if name == "Air quality":
+                        st.caption(
+                            "Overall pollution index summarises the strongest "
+                            "air-pollution concern. Lower is cleaner. It does "
+                            "not include pollen or weather."
+                        )
+                        st.write(
+                            "Overall pollution index: "
+                            f"**{air.get('european_aqi', 'Unavailable')}**"
+                        )
 
-                if name == "Weather":
-                    st.caption(
-                        f"Wind direction: {group.get('wind_direction', 'Unavailable')} · "
-                        f"Humidity feels: {group.get('humidity_description', 'Unavailable')}"
-                    )
+                    for item, severity in group.get("items", {}).items():
+                        config = get_status_config(severity)
+                        raw, unit = raw_values.get(item, (None, ""))
+
+                        if name == "Pollen":
+                            match = next(
+                                (
+                                    value
+                                    for value in pollen_records
+                                    if value.get("name") == item
+                                ),
+                                {},
+                            )
+                            raw_text = match.get("level", "Unavailable")
+                        else:
+                            raw_text = (
+                                "Unavailable"
+                                if raw is None
+                                else f"{float(raw):.1f} {unit}".strip()
+                            )
+
+                        st.markdown(
+                            f"**{config['icon']} {item}: "
+                            f"<span style='color:{config['color']}'>"
+                            f"{config['short_label']}</span>** · {raw_text}",
+                            unsafe_allow_html=True,
+                        )
+
+                        if item in MEASUREMENT_INFO:
+                            st.caption(MEASUREMENT_INFO[item])
+
+                    if name == "Weather":
+                        st.caption(
+                            "Wind direction: "
+                            f"{group.get('wind_direction', 'Unavailable')} · "
+                            "Humidity feels: "
+                            f"{group.get('humidity_description', 'Unavailable')}"
+                        )
 
 @st.dialog("Your personalized outdoor conditions", width="large")
 def _result_dialog(result):
