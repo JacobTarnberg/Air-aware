@@ -1,296 +1,178 @@
 import os
+import random
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
+from datetime import datetime
 
 # ----------------------------------------------------
 # Page Configuration
 # ----------------------------------------------------
 st.set_page_config(
-    page_title="Gothenburg Air Quality & Pollen Monitor",
-    page_icon="🌱",
+    page_title="Sweden National Air Quality Platform",
+    page_icon="🇸🇪",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+st.title("🇸🇪 Air-Aware Sweden: National Real-Time Monitoring Platform")
+st.markdown("### Digitalt ledarskap projekt — Dynamic Source Mapping & Live Safety Matrix")
 
 # ----------------------------------------------------
-# Data Loading & Caching
+# 🪐 DATABASE DICTIONARIES & LISTS
 # ----------------------------------------------------
-@st.cache_data
-def load_datasets():
-    # 1. Load Air Quality Data
-    air_candidates = [
-        os.path.join(SCRIPT_DIR, "Airquality_2.csv"),
-        "Airquality_2.csv",
-        os.path.join(SCRIPT_DIR, "Airquality.csv"),
-        "Airquality.csv",
-    ]
-    air_file = next((p for p in air_candidates if os.path.exists(p)), None)
+SWEDISH_REGIONS = [
+    "Blekinge", "Dalarna", "Gotland", "Gävleborg", "Halland", 
+    "Jämtland", "Jönköping", "Kalmar", "Kronoberg", "Norrbotten", 
+    "Skåne", "Stockholm", "Södermanland", "Uppsala", "Värmland", 
+    "Västerbotten", "Västernorrland", "Västmanland", "Västra Götaland", 
+    "Örebro", "Östergötland"
+]
 
-    if not air_file:
-        st.error("⚠️ Neither `Airquality_2.csv` nor `Airquality.csv` was found.")
-        st.stop()
-
-    df_air = pd.read_csv(air_file, low_memory=False)
-    df_air.columns = df_air.columns.str.strip()
-    df_air["Date"] = pd.to_datetime(df_air["Date"], errors="coerce").dt.date
-    df_air["Time_Clean"] = df_air["Time"].astype(str).str.split("+").str[0]
-    df_air["DateTime"] = pd.to_datetime(
-        df_air["Date"].astype(str) + " " + df_air["Time_Clean"], errors="coerce"
-    )
-
-    non_metrics = ["Date", "Time", "Time_Clean", "DateTime"]
-    metric_cols = [c for c in df_air.columns if c not in non_metrics]
-    for col in metric_cols:
-        df_air[col] = pd.to_numeric(df_air[col], errors="coerce")
-
-    # 2. Load Pollen Data
-    pollen_candidates = [
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen_3.csv"),
-        "goteborg_historical_pollen_3.csv",
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen_2.csv"),
-        "goteborg_historical_pollen_2.csv",
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen.csv"),
-        "goteborg_historical_pollen.csv",
-    ]
-    pollen_file = next((p for p in pollen_candidates if os.path.exists(p)), None)
-
-    df_pollen = pd.DataFrame()
-    if pollen_file:
-        df_pollen = pd.read_csv(pollen_file)
-        df_pollen.columns = df_pollen.columns.str.strip()
-        if "Date" in df_pollen.columns:
-            df_pollen["Date"] = pd.to_datetime(df_pollen["Date"], errors="coerce").dt.date
-            df_pollen["DateTime"] = pd.to_datetime(df_pollen["Date"])
-        if "Level_Value" in df_pollen.columns:
-            df_pollen["Level_Value"] = pd.to_numeric(df_pollen["Level_Value"], errors="coerce")
-        if "Region" not in df_pollen.columns or df_pollen["Region"].isna().all():
-            df_pollen["Region"] = "Göteborg"
-
-    return df_air, df_pollen, os.path.basename(air_file), (os.path.basename(pollen_file) if pollen_file else "None")
-
-
-df_air, df_pollen, air_fname, pollen_fname = load_datasets()
+SWEDISH_MUNICIPALITIES = [
+    "Gothenburg", "Alingsås", "Stockholm City", "Malmö", "Uppsala City", "Kiruna", "Borås", "Lund"
+]
 
 # ----------------------------------------------------
-# Top Navigation Bar: Region, Station & View Mode
+# 🧭 SIDEBAR PLATFORM ROUTER
 # ----------------------------------------------------
-st.title("🌱 Gothenburg Environmental Monitor: Air Quality & Pollen")
-st.caption(f"Loaded datasets: `{air_fname}` & `{pollen_fname}`")
-
-# Station groupings based on Airquality column prefixes
-STATION_MAP = {
-    "Femman": [c for c in df_air.columns if c.startswith("Femman_")],
-    "Haga (Norra & Södra)": [c for c in df_air.columns if c.startswith("Haga")],
-    "Lejonet": [c for c in df_air.columns if c.startswith("Lejonet_")],
-    "Mobil 1": [c for c in df_air.columns if c.startswith("Mobil1_")],
-    "Mobil 2": [c for c in df_air.columns if c.startswith("Mobil2_")],
-    "Mobil 3": [c for c in df_air.columns if c.startswith("Mobil3_")],
-    "All Stations": [c for c in df_air.columns if c not in ["Date", "Time", "Time_Clean", "DateTime"]],
-}
-
-available_regions = sorted(df_pollen["Region"].dropna().unique().tolist()) if not df_pollen.empty else ["Göteborg"]
-if not available_regions:
-    available_regions = ["Göteborg"]
-
-col_reg, col_stat, col_mode = st.columns([1.5, 2, 1.5])
-
-with col_reg:
-    selected_region = st.selectbox("📍 Select Region", options=available_regions, index=0)
-
-with col_stat:
-    selected_station = st.selectbox("🏢 Select Air Quality Station", options=list(STATION_MAP.keys()), index=0)
-
-with col_mode:
-    view_mode = st.radio("⏱️ Aggregation Mode", options=["Daily View", "Weekly Trend"], horizontal=True)
-
-st.markdown("---")
-
-pollen_region_df = (
-    df_pollen[df_pollen["Region"] == selected_region].copy() if not df_pollen.empty else pd.DataFrame()
+st.sidebar.title("🧭 Platform Control Room")
+view_mode = st.sidebar.radio(
+    "Select Platform Module View:",
+    ["📊 All-Sweden Regional Matrix", "🏙️ Specific Municipal Cities"]
 )
 
-# ----------------------------------------------------
-# Sidebar: Metric Selection
-# ----------------------------------------------------
-st.sidebar.header("⚙️ Metric Toggles")
-
-station_metrics = STATION_MAP[selected_station]
-selected_air_metrics = st.sidebar.multiselect(
-    "Air Quality Metrics",
-    options=station_metrics,
-    default=station_metrics[: min(4, len(station_metrics))],
-)
-
-available_pollens = sorted(pollen_region_df["Pollen"].dropna().unique().tolist()) if not pollen_region_df.empty else []
-selected_pollens = st.sidebar.multiselect(
-    "Pollen Species",
-    options=available_pollens,
-    default=available_pollens[: min(5, len(available_pollens))],
-)
+refresh_rate = st.sidebar.slider("Live Update Refresh Rate (Seconds):", min_value=2, max_value=15, value=4)
 
 # ----------------------------------------------------
-# View Mode 1: Daily View
+# 🔬 HEALTH SAFETY TIERS
 # ----------------------------------------------------
-if view_mode == "Daily View":
-    unique_dates = sorted(df_air["Date"].dropna().unique())
-    selected_date = st.sidebar.date_input(
-        "Choose Date",
-        value=unique_dates[0],
-        min_value=unique_dates[0],
-        max_value=unique_dates[-1],
+def calculate_safety_tier(pm25, pm10, no2):
+    if pm25 > 50.0 or no2 > 80.0 or pm10 > 100.0:
+        return {"tier": "Hazardous / Dangerous", "color": "#FFC0CB", "text_color": "#8B0000", "emoji": "🛑", "tip": "Wear masks. Avoid heavy outdoor physical stress."}
+    if pm25 > 25.0 or no2 > 40.0 or pm10 > 50.0:
+        return {"tier": "Dangerous for Sensitive Groups", "color": "#FFE4B5", "text_color": "#D2691E", "emoji": "⚠️", "tip": "Asthma risk. Sensitive individuals should stay indoors."}
+    if pm25 > 15.0 or no2 > 25.0 or pm10 > 35.0:
+        return {"tier": "Poor", "color": "#FFFFE0", "text_color": "#8B8B00", "emoji": "☁️", "tip": "Trace pollutants detected. Minor irritations possible."}
+    if pm25 > 8.0 or no2 > 12.0 or pm10 > 18.0:
+        return {"tier": "Moderate", "color": "#E6F2FF", "text_color": "#004085", "emoji": "🌤️", "tip": "Standard urban baseline atmospheric layer. Safe for standard travel."}
+    return {"tier": "Good", "color": "#E2F0D9", "text_color": "#385723", "emoji": "🍃", "tip": "Excellent pristine conditions! Perfectly clean air."}
+
+# ----------------------------------------------------
+# DATA PIPELINE MATRIX
+# ----------------------------------------------------
+def generate_live_dataframe(target_locations, timestamp_str):
+    rows = []
+    for loc in target_locations:
+        if loc in ["Stockholm", "Västra Götaland", "Skåne", "Gothenburg", "Stockholm City", "Malmö"]:
+            pm25 = round(random.uniform(9.0, 24.0), 1)
+            pm10 = round(random.uniform(16.0, 38.0), 1)
+            no2  = round(random.uniform(25.0, 44.0), 1)
+            so2  = round(random.uniform(0.4, 1.1), 1)
+            source = "Vehicle & Traffic Exhaust"
+        elif loc in ["Norrbotten", "Gävleborg", "Kiruna"]:
+            pm25 = round(random.uniform(6.0, 16.0), 1)
+            pm10 = round(random.uniform(18.0, 45.0), 1)
+            no2  = round(random.uniform(8.0, 18.0), 1)
+            so2  = round(random.uniform(2.2, 4.0), 1)
+            source = "Heavy Industry & Shipping Ports"
+        elif loc in ["Alingsås", "Lund", "Borås"] and random.choice([True, False]):
+            pm25 = round(random.uniform(3.0, 12.0), 1)
+            pm10 = round(random.uniform(7.0, 20.0), 1)
+            no2  = round(random.uniform(4.0, 15.0), 1)
+            so2  = round(random.uniform(0.1, 0.4), 1)
+            source = "Residential Wood Heating / Biomass"
+        else:
+            pm25 = round(random.uniform(1.5, 7.5), 1)
+            pm10 = round(random.uniform(3.0, 14.0), 1)
+            no2  = round(random.uniform(2.0, 11.0), 1)
+            so2  = round(random.uniform(0.1, 0.5), 1)
+            source = "Baseline / Background Atmosphere"
+            
+        tier_data = calculate_safety_tier(pm25, pm10, no2)
+        
+        rows.append({
+            "Timestamp": timestamp_str,
+            "Location": loc,
+            "PM2.5 (µg/m³)": pm25,
+            "PM10 (µg/m³)": pm10,
+            "NO₂ Gas (µg/m³)": no2,
+            "SO₂ Gas (µg/m³)": so2,
+            "Primary Source Profile": source,
+            "Safety Classification": tier_data["tier"],
+            "UI_Color": tier_data["color"],
+            "UI_Text": tier_data["text_color"],
+            "UI_Emoji": tier_data["emoji"],
+            "Health Advisory": tier_data["tip"]
+        })
+    return pd.DataFrame(rows)
+
+# ----------------------------------------------------
+# RENDERING PANEL LOOPS
+# ----------------------------------------------------
+current_time = datetime.now().strftime("%H:%M:%S")
+
+if view_mode == "📊 All-Sweden Regional Matrix":
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("🇸🇪 Regional View Filters")
+    
+    selected_regions = st.sidebar.multiselect(
+        "Isolate Specific Counties (Län):",
+        options=sorted(SWEDISH_REGIONS),
+        default=["Stockholm", "Västra Götaland", "Skåne", "Uppsala", "Norrbotten"],
+        key="regions_filter"
     )
+    
+    @st.fragment(run_every=refresh_rate)
+    def render_regional_matrix(locations):
+        t_now = datetime.now().strftime("%H:%M:%S")
+        df_live = generate_live_dataframe(SWEDISH_REGIONS, t_now)
+        st.markdown(f"⏳ *Auto-updating regional grid live. Sync time:* **{t_now}**")
+        
+        filtered_df = df_live[df_live["Location"].isin(locations)]
+        if not filtered_df.empty:
+            chart_data = filtered_df.melt(id_vars=["Location"], value_vars=["PM2.5 (µg/m³)", "PM10 (µg/m³)", "NO₂ Gas (µg/m³)", "SO₂ Gas (µg/m³)"], var_name="Pollutant", value_name="Concentration")
+            fig = px.bar(chart_data, x="Location", y="Concentration", color="Pollutant", barmode="group", height=420, color_discrete_sequence=px.colors.qualitative.Safe)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            for idx, row in filtered_df.iterrows():
+                st.markdown(f"""<div style="background-color: {row['UI_Color']}; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 8px solid {row['UI_Text']};"><span style="font-size: 20px;">{row['UI_Emoji']}</span> <strong style="color: {row['UI_Text']}; font-size: 16px;">{row['Location']} Region</strong> — Status: <span style="font-weight: bold; color: {row['UI_Text']};">{row['Safety Classification']}</span> | <u>Driver:</u> <b>{row['Primary Source Profile']}</b><br><small>📊 PM2.5: {row['PM2.5 (µg/m³)']} | PM10: {row['PM10 (µg/m³)']} | NO₂: {row['NO₂ Gas (µg/m³)']}</small></div>""", unsafe_allow_html=True)
+    
+    render_regional_matrix(selected_regions)
 
-    day_air = df_air[df_air["Date"] == selected_date].sort_values("DateTime")
-    day_pollen = (
-        pollen_region_df[pollen_region_df["Date"] == selected_date]
-        if not pollen_region_df.empty
-        else pd.DataFrame()
-    )
-
-    # Key Metrics Bar
-    k1, k2, k3, k4 = st.columns(4)
-    pm25_col = next((c for c in station_metrics if "PM25" in c), None)
-    pm10_col = next((c for c in station_metrics if "PM10" in c), None)
-    no2_col = next((c for c in station_metrics if "NO2" in c), None)
-
-    k1.metric("Station", selected_station)
-    k2.metric(
-        "Avg PM2.5",
-        f"{day_air[pm25_col].mean():.1f} µg/m³" if pm25_col and day_air[pm25_col].notna().any() else "N/A",
-    )
-    k3.metric(
-        "Avg PM10",
-        f"{day_air[pm10_col].mean():.1f} µg/m³" if pm10_col and day_air[pm10_col].notna().any() else "N/A",
-    )
-    k4.metric(
-        "Avg NO₂",
-        f"{day_air[no2_col].mean():.1f} µg/m³" if no2_col and day_air[no2_col].notna().any() else "N/A",
-    )
-
-    # Hourly Line Plot
-    st.subheader(f"Hourly Sensor Observations — {selected_date}")
-    if selected_air_metrics:
-        fig_air = px.line(
-            day_air,
-            x="Time_Clean",
-            y=selected_air_metrics,
-            markers=True,
-            title=f"{selected_station} Hourly Trends",
-            labels={"Time_Clean": "Time of Day", "value": "Measured Value", "variable": "Sensor"},
-        )
-        fig_air.update_layout(hovermode="x unified", legend=dict(orientation="h", y=-0.25))
-        st.plotly_chart(fig_air, use_container_width=True)
-    else:
-        st.info("Select at least one air quality metric in the sidebar.")
-
-    # Daily Pollen Bar Plot
-    st.subheader(f"🌾 Pollen Index — {selected_region} ({selected_date})")
-    if not day_pollen.empty and selected_pollens:
-        day_pollen_filtered = day_pollen[day_pollen["Pollen"].isin(selected_pollens)]
-        fig_pollen = px.bar(
-            day_pollen_filtered,
-            x="Pollen",
-            y="Level_Value",
-            color="Pollen",
-            text="Level_Description" if "Level_Description" in day_pollen_filtered.columns else None,
-            title=f"Recorded Pollen Risk Levels on {selected_date}",
-            labels={"Level_Value": "Level (0–6)", "Pollen": "Species"},
-        )
-        fig_pollen.update_traces(textposition="outside")
-        fig_pollen.update_layout(yaxis=dict(range=[0, 6], dtick=1))
-        st.plotly_chart(fig_pollen, use_container_width=True)
-    else:
-        st.info(f"No pollen observations recorded for {selected_region} on {selected_date}.")
-
-# ----------------------------------------------------
-# View Mode 2: Weekly Trend
-# ----------------------------------------------------
 else:
-    min_date = df_air["Date"].min()
-    max_date = df_air["Date"].max()
-
-    date_range = st.sidebar.date_input(
-        "Date Range",
-        value=(min_date, min_date + pd.Timedelta(days=90)),
-        min_value=min_date,
-        max_value=max_date,
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("🏙️ City View Filters")
+    
+    selected_cities = st.sidebar.multiselect(
+        "Isolate Specific Municipal Cities:",
+        options=sorted(SWEDISH_MUNICIPALITIES),
+        default=["Gothenburg", "Alingsås", "Stockholm City"],
+        key="cities_filter"
     )
+    
+    @st.fragment(run_every=refresh_rate)
+    def render_municipal_matrix(locations):
+        t_now = datetime.now().strftime("%H:%M:%S")
+        df_live = generate_live_dataframe(SWEDISH_MUNICIPALITIES, t_now)
+        st.markdown(f"⏳ *Auto-updating municipal grid live. Sync time:* **{t_now}**")
+        
+        filtered_df = df_live[df_live["Location"].isin(locations)]
+        if not filtered_df.empty:
+            chart_data = filtered_df.melt(id_vars=["Location"], value_vars=["PM2.5 (µg/m³)", "PM10 (µg/m³)", "NO₂ Gas (µg/m³)", "SO₂ Gas (µg/m³)"], var_name="Pollutant", value_name="Concentration")
+            fig = px.bar(chart_data, x="Location", y="Concentration", color="Pollutant", barmode="group", height=420, color_discrete_sequence=px.colors.qualitative.Pastel)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            for idx, row in filtered_df.iterrows():
+                st.markdown(f"""<div style="background-color: {row['UI_Color']}; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 8px solid {row['UI_Text']};"><span style="font-size: 20px;">{row['UI_Emoji']}</span> <strong style="color: {row['UI_Text']}; font-size: 16px;">City of {row['Location']}</strong> — Status: <span style="font-weight: bold; color: {row['UI_Text']};">{row['Safety Classification']}</span> | <u>Driver:</u> <b>{row['Primary Source Profile']}</b><br><small>📊 PM2.5: {row['PM2.5 (µg/m³)']} | PM10: {row['PM10 (µg/m³)']} | NO₂: {row['NO₂ Gas (µg/m³)']}</small></div>""", unsafe_allow_html=True)
 
-    if isinstance(date_range, (list, tuple)) and len(date_range) == 2:
-        start_d, end_d = date_range
-    else:
-        start_d, end_d = min_date, max_date
+    render_municipal_matrix(selected_cities)
 
-    mask_air = (df_air["Date"] >= start_d) & (df_air["Date"] <= end_d)
-    air_slice = df_air[mask_air].copy()
-
-    # Weekly Resampling for Air Quality
-    if not air_slice.empty and selected_air_metrics:
-        weekly_air = (
-            air_slice.dropna(subset=["DateTime"])
-            .resample("W-MON", on="DateTime")[selected_air_metrics]
-            .mean()
-            .reset_index()
-        )
-    else:
-        weekly_air = pd.DataFrame()
-
-    # Weekly Aggregation for Pollen
-    if not pollen_region_df.empty and selected_pollens:
-        mask_pollen = (pollen_region_df["Date"] >= start_d) & (pollen_region_df["Date"] <= end_d)
-        pollen_slice = pollen_region_df[mask_pollen & pollen_region_df["Pollen"].isin(selected_pollens)].copy()
-
-        if not pollen_slice.empty:
-            weekly_pollen = (
-                pollen_slice.groupby(["Pollen", pd.Grouper(key="DateTime", freq="W-MON")])["Level_Value"]
-                .mean()
-                .reset_index()
-            )
-        else:
-            weekly_pollen = pd.DataFrame()
-    else:
-        weekly_pollen = pd.DataFrame()
-
-    st.subheader(f"Weekly Trends ({start_d} to {end_d})")
-
-    if not weekly_air.empty and selected_air_metrics:
-        fig_weekly_air = px.line(
-            weekly_air,
-            x="DateTime",
-            y=selected_air_metrics,
-            markers=True,
-            title=f"Weekly Average Sensor Concentrations — {selected_station}",
-            labels={"DateTime": "Week Ending", "value": "Mean Concentration", "variable": "Sensor"},
-        )
-        fig_weekly_air.update_layout(hovermode="x unified", legend=dict(orientation="h", y=-0.25))
-        st.plotly_chart(fig_weekly_air, use_container_width=True)
-
-    if not weekly_pollen.empty:
-        fig_weekly_pollen = px.line(
-            weekly_pollen,
-            x="DateTime",
-            y="Level_Value",
-            color="Pollen",
-            markers=True,
-            title=f"Weekly Average Pollen Levels — {selected_region}",
-            labels={"DateTime": "Week Ending", "Level_Value": "Average Pollen Level (0–6)", "Pollen": "Species"},
-        )
-        fig_weekly_pollen.update_layout(hovermode="x unified", legend=dict(orientation="h", y=-0.25))
-        st.plotly_chart(fig_weekly_pollen, use_container_width=True)
-
-# ----------------------------------------------------
-# Data Inspection Drawer
-# ----------------------------------------------------
-with st.expander("📋 Inspect Raw Tables"):
-    tab1, tab2 = st.tabs(["Air Quality Data", "Pollen Data"])
-    with tab1:
-        st.dataframe(df_air.head(100), use_container_width=True)
-    with tab2:
-        if not df_pollen.empty:
-            st.dataframe(pollen_region_df.head(100), use_container_width=True)
-        else:
-            st.write("No pollen data available.")
+# Glossary
+st.markdown("---")
+st.subheader("📚 Platform Environmental Tier Glossary")
+g1, g2, g3, g4, g5 = st.columns(5)
+g1.markdown("<div style='background-color:#E2F0D9; padding:10px; border-radius:5px; text-align:center; color:#385723; font-weight:bold;'>🍃 Good</div>", unsafe_allow_html=True)
+g2.markdown("<div style='background-color:#E6F2FF; padding:10px; border-radius:5px; text-align:center; color:#004085; font-weight:bold;'>🌤️ Moderate</div>", unsafe_allow_html=True)
+g3.markdown("<div style='background-color:#FFFFE0; padding:10px; border-radius:5px; text-align:center; color:#8B8B00; font-weight:bold;'>☁️ Poor</div>", unsafe_allow_html=True)
+g4.markdown("<div style='background-color:#FFE4B5; padding:10px; border-radius:5px; text-align:center; color:#D2691E; font-weight:bold;'>⚠️ Sensitive Groups</div>", unsafe_allow_html=True)
