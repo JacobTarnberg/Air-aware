@@ -268,6 +268,68 @@ def check_current_pollen(city_name: str, region_name: str):
     return False, None
 
 
+def pollen_level_label(level: int) -> str:
+    """Map a numeric NRM pollen level (0–6) to a human-readable label."""
+    labels = {
+        0: "None",
+        1: "Low",
+        2: "Low–Moderate",
+        3: "Moderate",
+        4: "Moderate–High",
+        5: "High",
+        6: "Very high",
+    }
+    return labels.get(int(level or 0), "Unknown")
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
+def fetch_pollen_forecast(city_name: str, region_name: str):
+    """Fetch the current NRM pollen forecast dict and a pollen-type name map.
+
+    Returns (forecast, pollen_types) where:
+      - forecast is the first current forecast item (or None)
+      - pollen_types maps pollenId -> {"name": ...}
+    """
+    forecast = None
+    pollen_types: dict = {}
+    try:
+        r_regs = requests.get(
+            f"{NRM_POLLEN_API_URL}/regions", params={"limit": 100}, timeout=4
+        )
+        if r_regs.status_code == 200:
+            reg_items = r_regs.json().get("items", [])
+            match = next(
+                (
+                    r
+                    for r in reg_items
+                    if r["name"].lower() in [city_name.lower(), region_name.lower()]
+                ),
+                None,
+            )
+            if match:
+                r_fc = requests.get(
+                    f"{NRM_POLLEN_API_URL}/forecasts",
+                    params={"region_id": match["id"], "current": "true"},
+                    timeout=4,
+                )
+                if r_fc.status_code == 200:
+                    fc_items = r_fc.json().get("items", [])
+                    if fc_items:
+                        forecast = fc_items[0]
+
+        # Pollen-type name lookup (id -> name)
+        r_types = requests.get(
+            f"{NRM_POLLEN_API_URL}/pollen-types", params={"limit": 100}, timeout=4
+        )
+        if r_types.status_code == 200:
+            for t in r_types.json().get("items", []):
+                pollen_types[t.get("id")] = {"name": t.get("name", "Unknown")}
+    except Exception:
+        pass
+
+    return forecast, pollen_types
+
+
 # --------------------------------------------------
 # Live Environmental Data Fetchers
 # --------------------------------------------------
@@ -468,6 +530,7 @@ lat, lon = REGIONS_AND_CITIES[selected_region][selected_city]
 curr_pol, hourly_df = fetch_city_pollution(lat, lon)
 wx = fetch_city_weather(lat, lon)
 has_current_pollen, pollen_source_name = check_current_pollen(selected_city, selected_region)
+forecast, pollen_types = fetch_pollen_forecast(selected_city, selected_region)
 
 aqi_val = curr_pol.get("european_aqi", 15)
 pm25_val = curr_pol.get("pm2_5", 5.0)
@@ -522,13 +585,53 @@ if has_current_pollen:
 else:
     st.info(f"ℹ️ Current pollen data is unavailable for **{selected_city}** (no active monitoring station or off-season).")
 
+# ---------------------------------------------------------------------------
+# POLLEN DETAIL — forecast text + per-type levels
+# ---------------------------------------------------------------------------
+st.divider()
+st.subheader("Pollen forecast")
+if forecast:
+    if forecast.get("text"):
+        st.write(forecast["text"])
+    st.caption(
+        f"Forecast period: {forecast.get('startDate', '?')} → "
+        f"{forecast.get('endDate', '?')}"
+    )
+    series = forecast.get("levelSeries") or []
+    if series:
+        rows = []
+        for entry in series:
+            ptype = pollen_types.get(entry.get("pollenId"), {})
+            rows.append(
+                {
+                    "Pollen": ptype.get("name", "Unknown"),
+                    "Date": entry.get("time", "")[:10],
+                    "Level": pollen_level_label(entry.get("level", 0)),
+                    "n": int(entry.get("level", 0)),
+                }
+            )
+        df = pd.DataFrame(rows)
+        if not df.empty:
+            pivot = df.pivot_table(
+                index="Pollen", columns="Date", values="n", aggfunc="max"
+            )
+            st.dataframe(pivot, use_container_width=True)
+            st.caption("Values 0 (none) → 6 (very high).")
+    else:
+        st.markdown("### 🌼 Pollen")
+        st.markdown("**Season ended**")
+        st.caption("No active pollen season right now.")
+else:
+    st.markdown("### 🌼 Pollen")
+    st.markdown("**Season ended**")
+    st.caption("No active pollen season right now.")
+
 st.markdown("---")
 
 # --------------------------------------------------
 # SECTION: Runner's Historical Pollen Comparison
 # --------------------------------------------------
 st.subheader("🌾 Runner's Pollen Radar: Same Date Previous Year Comparison")
-st.caption(f"Historical trap observations referenced from `{pollen_filename}`.")
 
 pollen_ctrl_col, pollen_metric_col = st.columns([1.5, 3.5])
 
