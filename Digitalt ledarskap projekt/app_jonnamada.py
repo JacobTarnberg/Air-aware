@@ -59,9 +59,42 @@ def fetch_city_weather(latitude, longitude):
 def _items(payload): return payload.get("items", []) if isinstance(payload, dict) and isinstance(payload.get("items", []), list) else []
 
 def _distance(lat1, lon1, lat2, lon2):
-    lat1, lon1, lat2, lon2 = map(radians, map(float, (lat1, lon1, lat2, lon2)))
+    lat1, lon1, lat2, lon2 = map(
+        radians,
+        map(float, (lat1, lon1, lat2, lon2)),
+    )
     value = sin((lat2-lat1)/2)**2 + cos(lat1)*cos(lat2)*sin((lon2-lon1)/2)**2
     return 2 * 6371 * asin(sqrt(value))
+
+
+def _valid_pollen_regions(regions):
+    """Remove API regions that do not contain usable coordinates."""
+    valid_regions = []
+
+    for region in regions:
+        if not isinstance(region, dict):
+            continue
+
+        region_id = region.get("id")
+        region_latitude = region.get("latitude")
+        region_longitude = region.get("longitude")
+
+        if (
+            region_id is None
+            or region_latitude is None
+            or region_longitude is None
+        ):
+            continue
+
+        try:
+            float(region_latitude)
+            float(region_longitude)
+        except (TypeError, ValueError):
+            continue
+
+        valid_regions.append(region)
+
+    return valid_regions
 
 def _pollen_level(level):
     try: level = int(level)
@@ -73,8 +106,26 @@ def fetch_live_pollen(latitude, longitude, planned_date):
     info = {"available": False, "source": "Pollenrapporten", "region": None, "latitude": None, "longitude": None, "distance_km": None, "forecast_date": None, "forecast_text": None, "reason": None}
     try:
         response = requests.get(f"{POLLEN_URL}/regions", params={"offset": 0, "limit": 100}, timeout=10); response.raise_for_status()
-        regions = _items(response.json()); nearest = min(regions, key=lambda row: _distance(latitude, longitude, row["latitude"], row["longitude"])) if regions else None
-        if not nearest: info["reason"] = "No pollen forecast region was found."; return [], info
+        regions = _valid_pollen_regions(
+            _items(response.json())
+        )
+
+        nearest = min(
+            regions,
+            key=lambda row: _distance(
+                latitude,
+                longitude,
+                row["latitude"],
+                row["longitude"],
+            ),
+        ) if regions else None
+
+        if not nearest:
+            info["reason"] = (
+                "No pollen forecast region with valid "
+                "coordinates was found."
+            )
+            return [], info
         info.update({"region": nearest.get("name"), "latitude": nearest.get("latitude"), "longitude": nearest.get("longitude"), "distance_km": _distance(latitude, longitude, nearest["latitude"], nearest["longitude"])})
         response = requests.get(f"{POLLEN_URL}/pollen-types", params={"offset": 0, "limit": 100}, timeout=10); response.raise_for_status()
         names = {row.get("id"): row.get("name", "Unknown pollen") for row in _items(response.json())}
@@ -88,7 +139,12 @@ def fetch_live_pollen(latitude, longitude, planned_date):
             if records: info.update({"available": True, "forecast_date": target, "forecast_text": forecast.get("text")}); break
         if not records: info["reason"] = "Pollenrapporten has no numerical pollen forecast for the selected date. This may happen outside the active pollen season."
         return records, info
-    except (requests.RequestException, ValueError, KeyError) as error:
+    except (
+        requests.RequestException,
+        TypeError,
+        ValueError,
+        KeyError,
+    ) as error:
         info["reason"] = "The Pollenrapporten API could not be reached."; info["technical_error"] = str(error); return [], info
 
 def previous_year_safe(target):
