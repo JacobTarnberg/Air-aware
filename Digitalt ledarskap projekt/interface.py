@@ -1,6 +1,10 @@
 import streamlit as st
 
 
+# --------------------------------------------------
+# Visual status settings
+# --------------------------------------------------
+
 STATUS_DISPLAY = {
     "good": {
         "label": "Good",
@@ -40,24 +44,44 @@ STATUS_DISPLAY = {
 }
 
 
+# --------------------------------------------------
+# Formatting helpers
+# --------------------------------------------------
+
 def display_value(value, unit="", decimals=1):
     """
-    Format a number for the interface.
+    Format a measurement for display.
     """
 
     if value is None:
         return "Unavailable"
 
     try:
-        return f"{float(value):.{decimals}f} {unit}".strip()
+        formatted_value = f"{float(value):.{decimals}f}"
+
+        if unit:
+            return f"{formatted_value} {unit}"
+
+        return formatted_value
 
     except (TypeError, ValueError):
         return "Unavailable"
 
 
+def format_pollen_value(value):
+    """
+    Format a pollen status.
+    """
+
+    if value is None:
+        return "Unavailable"
+
+    return str(value).replace("_", " ").title()
+
+
 def get_status_display(status):
     """
-    Return visual information for a status.
+    Find the visual settings for a status.
     """
 
     return STATUS_DISPLAY.get(
@@ -66,13 +90,16 @@ def get_status_display(status):
     )
 
 
+# --------------------------------------------------
+# Main recommendation
+# --------------------------------------------------
+
 def show_main_recommendation(result, recommendation, city):
     """
-    Display the main outdoor recommendation.
+    Display the main recommendation card.
     """
 
     display = get_status_display(result["status"])
-
     reasons_text = " • ".join(result["reasons"])
 
     st.markdown(
@@ -83,6 +110,7 @@ def show_main_recommendation(result, recommendation, city):
             border-left: 10px solid {display['color']};
             padding: 24px;
             border-radius: 12px;
+            margin-top: 10px;
             margin-bottom: 20px;
         ">
             <p style="
@@ -90,7 +118,7 @@ def show_main_recommendation(result, recommendation, city):
                 color: #475467;
                 font-size: 1rem;
             ">
-                Current outdoor recommendation for {city}
+                Current recommendation for {city}
             </p>
 
             <h2 style="
@@ -121,23 +149,34 @@ def show_main_recommendation(result, recommendation, city):
     )
 
 
+# --------------------------------------------------
+# Status overview
+# --------------------------------------------------
+
 def show_status_overview(result):
     """
-    Display overall, air-quality and pollen statuses.
+    Display overall, air and pollen statuses.
     """
 
     st.subheader("Conditions at a glance")
 
-    overall_display = get_status_display(result["status"])
-    air_display = get_status_display(result["air_status"])
-    pollen_display = get_status_display(result["pollen_status"])
+    overall_display = get_status_display(
+        result["status"]
+    )
+
+    air_display = get_status_display(
+        result["air_status"]
+    )
+
+    pollen_display = get_status_display(
+        result["pollen_status"]
+    )
 
     overall_column, air_column, pollen_column = st.columns(3)
 
     overall_column.metric(
         "Outdoor viability",
         f"{overall_display['icon']} {result['score']}/100",
-        help="Combined score based on air quality, weather and pollen when available.",
     )
 
     air_column.metric(
@@ -151,6 +190,10 @@ def show_status_overview(result):
     )
 
 
+# --------------------------------------------------
+# Environmental measurements
+# --------------------------------------------------
+
 def show_environmental_metrics(
     aqi,
     pm25,
@@ -161,7 +204,7 @@ def show_environmental_metrics(
     precipitation,
 ):
     """
-    Display current environmental measurements.
+    Display current air and weather measurements.
     """
 
     st.subheader("Current measurements")
@@ -206,54 +249,48 @@ def show_environmental_metrics(
     )
 
 
-def show_pollen_details(pollen_data=None):
-    """
-    Display pollen categories.
+# --------------------------------------------------
+# Pollen
+# --------------------------------------------------
 
-    This automatically shows unavailable until pollen is connected.
+def show_pollen_details(pollen_data, using_sample_pollen):
+    """
+    Display tree, grass and weed pollen.
     """
 
     st.subheader("Pollen details")
-
-    pollen_data = pollen_data or {}
-
-    tree = pollen_data.get("tree")
-    grass = pollen_data.get("grass")
-    weed = pollen_data.get("weed")
 
     tree_column, grass_column, weed_column = st.columns(3)
 
     tree_column.metric(
         "Tree pollen",
-        str(tree).replace("_", " ").title()
-        if tree is not None
-        else "Unavailable",
+        format_pollen_value(pollen_data.get("tree")),
     )
 
     grass_column.metric(
         "Grass pollen",
-        str(grass).replace("_", " ").title()
-        if grass is not None
-        else "Unavailable",
+        format_pollen_value(pollen_data.get("grass")),
     )
 
     weed_column.metric(
         "Weed pollen",
-        str(weed).replace("_", " ").title()
-        if weed is not None
-        else "Unavailable",
+        format_pollen_value(pollen_data.get("weed")),
     )
 
-    if not pollen_data:
+    if using_sample_pollen:
         st.info(
-            "Pollen data has not been connected yet. "
-            "The current outdoor score does not include pollen."
+            "The pollen values are sample data for the prototype. "
+            "Live pollen information is not connected yet."
         )
 
 
+# --------------------------------------------------
+# Advice
+# --------------------------------------------------
+
 def show_practical_advice(recommendation):
     """
-    Display advice for different users.
+    Display activity and sensitive-group advice.
     """
 
     st.subheader("Practical advice")
@@ -269,50 +306,77 @@ def show_practical_advice(recommendation):
         st.write(recommendation["sensitive"])
 
 
+# --------------------------------------------------
+# Explanations
+# --------------------------------------------------
+
 def show_explanations():
     """
-    Explain technical measurements.
+    Explain technical terms.
     """
 
     with st.expander("What do these measurements mean?"):
         st.markdown(
             """
-            **European AQI:** A combined air-quality index. Lower values
-            represent cleaner air.
+            **European AQI:** A combined air-quality index.
+            Lower values represent cleaner air.
 
-            **PM2.5:** Very small particles that can travel deeply into
-            the lungs.
+            **PM2.5:** Very small particles that can travel
+            deeply into the lungs.
 
-            **PM10:** Inhalable particles such as dust and road particles.
+            **PM10:** Inhalable particles such as dust and
+            road particles.
 
-            **NO₂:** Nitrogen dioxide, a gas commonly associated with
-            traffic and combustion.
+            **NO₂:** Nitrogen dioxide, a gas commonly connected
+            to traffic and combustion.
 
-            **Outdoor viability score:** Air Aware's simplified score based
-            on air quality, weather and pollen when available.
+            **Outdoor viability:** Air Aware's simplified score
+            based on air quality, weather and pollen.
             """
         )
 
 
+# --------------------------------------------------
+# Data sources
+# --------------------------------------------------
+
 def show_data_information(
-    pollution_source="Open-Meteo",
-    weather_source="Unknown",
-    pollen_source=None,
-    updated_at=None,
+    weather_source,
+    pollen_data,
+    using_sample_pollen,
 ):
     """
-    Display data sources and update information.
+    Display sources and pollen update information.
     """
 
+    if using_sample_pollen:
+        pollen_source = pollen_data.get(
+            "source",
+            "Sample pollen data",
+        )
+    else:
+        pollen_source = pollen_data.get(
+            "source",
+            "Unknown pollen source",
+        )
+
     st.caption(
-        f"Air-quality source: {pollution_source} | "
+        f"Air-quality source: Open-Meteo | "
         f"Weather source: {weather_source} | "
-        f"Pollen source: {pollen_source or 'Not connected'}"
+        f"Pollen source: {pollen_source}"
     )
 
-    if updated_at is not None:
-        st.caption(f"Last retrieved: {updated_at}")
+    pollen_updated = pollen_data.get("updated_at")
 
+    if pollen_updated:
+        st.caption(
+            f"Pollen data timestamp: {pollen_updated}"
+        )
+
+
+# --------------------------------------------------
+# Complete dashboard
+# --------------------------------------------------
 
 def show_air_aware_dashboard(
     city,
@@ -326,13 +390,11 @@ def show_air_aware_dashboard(
     wind_speed,
     precipitation,
     weather_source,
-    pollen_data=None,
-    pollen_source=None,
+    pollen_data,
+    using_sample_pollen,
 ):
     """
     Display the complete Air Aware summary.
-
-    app_jonnamada.py only needs to call this one function.
     """
 
     show_main_recommendation(
@@ -353,15 +415,17 @@ def show_air_aware_dashboard(
         precipitation=precipitation,
     )
 
-    show_pollen_details(pollen_data)
+    show_pollen_details(
+        pollen_data=pollen_data,
+        using_sample_pollen=using_sample_pollen,
+    )
 
     show_practical_advice(recommendation)
 
     show_explanations()
 
     show_data_information(
-        pollution_source="Open-Meteo",
         weather_source=weather_source,
-        pollen_source=pollen_source,
-        updated_at=None,
+        pollen_data=pollen_data,
+        using_sample_pollen=using_sample_pollen,
     )
