@@ -124,17 +124,20 @@ show_welcome_if_needed()
 preferences = render_sidebar_preferences()
 title, refresh = st.columns([5, 1])
 with title:
-    st.title("🌿 Air Aware")
-    st.caption("Understand the air before you go outside.")
+    st.title("Air Aware")
 with refresh:
     if st.button("🔄 Refresh", use_container_width=True): st.cache_data.clear(); st.rerun()
+
+if st.button("Choose or change preferences", type="secondary"):
+    st.session_state.air_aware_welcome_complete = False
+    st.rerun()
 
 regions = list(REGIONS_AND_CITIES); default_region = regions.index("Västra Götaland") if "Västra Götaland" in regions else 0
 region_col, city_col, date_col = st.columns(3)
 with region_col: selected_region = st.selectbox("Region", regions, index=default_region)
 cities = list(REGIONS_AND_CITIES[selected_region]); default_city = cities.index("Göteborg") if "Göteborg" in cities else 0
 with city_col: selected_city = st.selectbox("City", cities, index=default_city)
-with date_col: target_date = st.date_input("Planned activity date", value=date.today())
+with date_col: target_date = st.date_input("Date", value=date.today(), format="DD/MM/YYYY")
 latitude, longitude = REGIONS_AND_CITIES[selected_region][selected_city]
 
 # Data
@@ -161,7 +164,7 @@ result = describe_overall_conditions(
     selected_pollen_groups=preferences["selected_pollen_groups"], selected_pollen_types=preferences["selected_pollen_types"], selected_weather=preferences["selected_weather"],
 )
 
-render_overall_result(result)
+render_overall_result(result, city=selected_city, region=selected_region)
 show_result_dialog_if_requested(result)
 st.markdown("### Your selected condition areas")
 render_category_sections(result, air, weather, pollen_records)

@@ -79,7 +79,7 @@ def _status_card(title, severity, subtitle="", icon=None):
     <div style='font-size:1.35rem;font-weight:800;color:{config['color']};margin:7px 0'>{html.escape(config['short_label'])}</div>
     <div style='font-size:.85rem;color:#64748B'>{html.escape(subtitle)}</div></div>""", unsafe_allow_html=True)
 
-def render_overall_result(result):
+def render_overall_result(result, city=None, region=None):
     config = get_status_config(result.get("severity")); causes = result.get("causes", [])
     cause_text = ", ".join(causes) if causes else "Not enough available information"
     selected_detail = []
@@ -88,10 +88,26 @@ def render_overall_result(result):
     detail_text = ", ".join(selected_detail)
     reason = cause_text + (f" — {detail_text}" if detail_text else "")
     advice = get_personalized_advice(result)
+    location = ", ".join(value for value in (city, region) if value)
     st.markdown(f"""<div style='background:{config['color']}12;border:2px solid {config['color']};border-left:10px solid {config['color']};padding:22px;border-radius:14px'>
-    <div style='color:#475569'>Your personalized outdoor conditions</div>
+    <div style='color:#475569;font-size:1.05rem;font-weight:600'>{html.escape(location)}</div>
     <div style='font-size:2rem;font-weight:800;color:{config['color']}'>{config['icon']} {html.escape(config['short_label'])}</div>
-    <p>{html.escape(config['message'])}</p><p><b>Main reason:</b> {html.escape(reason)}</p><p><b>What to do:</b> {html.escape(advice)}</p></div>""", unsafe_allow_html=True)
+    <p>{html.escape(config['message'])}</p><p><b>What to do:</b> {html.escape(advice)}</p></div>""", unsafe_allow_html=True)
+
+    with st.expander("Why am I seeing this result?", expanded=False):
+        st.write(f"The main reason is: **{reason}**")
+        selected_names = {
+            "air_quality": "Air quality and particles",
+            "gases": "Gases",
+            "pollen": "Pollen",
+            "weather": "Weather conditions",
+        }
+        selected = result.get("selected_categories", [])
+        if selected:
+            st.caption(
+                "Included in this result: "
+                + ", ".join(selected_names.get(item, item) for item in selected)
+            )
 
 def render_category_sections(result, air, weather, pollen_records):
     groups = result.get("groups", {})
