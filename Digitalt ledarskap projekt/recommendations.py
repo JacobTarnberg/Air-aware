@@ -1,5 +1,5 @@
 # --------------------------------------------------
-# Status configuration
+# Status ranking
 # --------------------------------------------------
 
 STATUS_RANK = {
@@ -14,14 +14,14 @@ STATUS_RANK = {
 
 
 # --------------------------------------------------
-# Basic helper functions
+# Helper functions
 # --------------------------------------------------
 
 def safe_number(value):
     """
-    Convert a value into a number.
+    Convert a value to a number.
 
-    If conversion is impossible, return None.
+    Return None if the value cannot be converted.
     """
 
     try:
@@ -34,9 +34,65 @@ def safe_number(value):
         return None
 
 
+def get_worst_status(statuses):
+    """
+    Return the worst available status from a list.
+    """
+
+    available_statuses = [
+        status
+        for status in statuses
+        if status in STATUS_RANK and status != "unavailable"
+    ]
+
+    if not available_statuses:
+        return "unavailable"
+
+    return max(
+        available_statuses,
+        key=lambda status: STATUS_RANK[status],
+    )
+
+
+# --------------------------------------------------
+# Air quality
+# --------------------------------------------------
+
+def get_air_status(aqi):
+    """
+    Convert the European AQI number into a readable status.
+    """
+
+    aqi = safe_number(aqi)
+
+    if aqi is None:
+        return "unavailable"
+
+    if aqi <= 20:
+        return "good"
+
+    if aqi <= 40:
+        return "fair"
+
+    if aqi <= 60:
+        return "moderate"
+
+    if aqi <= 80:
+        return "poor"
+
+    if aqi <= 100:
+        return "very_poor"
+
+    return "extremely_poor"
+
+
+# --------------------------------------------------
+# Pollen
+# --------------------------------------------------
+
 def normalize_pollen_status(status):
     """
-    Convert different pollen words into our standard status system.
+    Convert different pollen labels to our status system.
     """
 
     if status is None:
@@ -71,91 +127,37 @@ def normalize_pollen_status(status):
     return mapping.get(normalized, "unavailable")
 
 
-def get_worst_status(statuses):
-    """
-    Return the worst available status from a list.
-    """
-
-    available_statuses = [
-        status
-        for status in statuses
-        if status in STATUS_RANK and status != "unavailable"
-    ]
-
-    if not available_statuses:
-        return "unavailable"
-
-    return max(
-        available_statuses,
-        key=lambda status: STATUS_RANK[status],
-    )
-
-
-# --------------------------------------------------
-# Air-quality interpretation
-# --------------------------------------------------
-
-def get_air_status(aqi):
-    """
-    Convert European AQI into a readable status.
-    """
-
-    aqi = safe_number(aqi)
-
-    if aqi is None:
-        return "unavailable"
-
-    if aqi <= 20:
-        return "good"
-
-    if aqi <= 40:
-        return "fair"
-
-    if aqi <= 60:
-        return "moderate"
-
-    if aqi <= 80:
-        return "poor"
-
-    if aqi <= 100:
-        return "very_poor"
-
-    return "extremely_poor"
-
-
-# --------------------------------------------------
-# Pollen interpretation
-# --------------------------------------------------
-
 def get_pollen_status(pollen_data=None):
     """
     Find the worst pollen status.
 
-    pollen_data can look like:
-
-    {
-        "tree": "high",
-        "grass": "low",
-        "weed": "moderate"
-    }
-
-    If pollen is not connected yet, return unavailable.
+    If pollen_data is missing, return unavailable.
     """
 
     if not pollen_data:
         return "unavailable"
 
-    pollen_statuses = [
-        normalize_pollen_status(pollen_data.get("tree")),
-        normalize_pollen_status(pollen_data.get("grass")),
-        normalize_pollen_status(pollen_data.get("weed")),
-    ]
+    tree_status = normalize_pollen_status(
+        pollen_data.get("tree")
+    )
 
-    return get_worst_status(pollen_statuses)
+    grass_status = normalize_pollen_status(
+        pollen_data.get("grass")
+    )
+
+    weed_status = normalize_pollen_status(
+        pollen_data.get("weed")
+    )
+
+    return get_worst_status([
+        tree_status,
+        grass_status,
+        weed_status,
+    ])
 
 
 # --------------------------------------------------
-# Outdoor viability calculation
+# Viability calculation
 # --------------------------------------------------
 
 def calculate_viability(
@@ -167,13 +169,6 @@ def calculate_viability(
 ):
     """
     Calculate an outdoor viability score from 0 to 100.
-
-    The result considers:
-    - European AQI
-    - Pollen, when available
-    - Rain
-    - Wind
-    - Temperature
     """
 
     score = 100
@@ -239,21 +234,29 @@ def calculate_viability(
     if precipitation is not None:
         if precipitation >= 3:
             score -= 40
-            reasons.append(f"Heavy rain ({precipitation:.1f} mm)")
+            reasons.append(
+                f"Heavy rain ({precipitation:.1f} mm)"
+            )
 
         elif precipitation > 0.2:
             score -= 15
-            reasons.append(f"Light rain ({precipitation:.1f} mm)")
+            reasons.append(
+                f"Light rain ({precipitation:.1f} mm)"
+            )
 
     # Wind deductions
     if wind_speed is not None:
         if wind_speed >= 13:
             score -= 35
-            reasons.append(f"Strong wind ({wind_speed:.1f} m/s)")
+            reasons.append(
+                f"Strong wind ({wind_speed:.1f} m/s)"
+            )
 
         elif wind_speed >= 8:
             score -= 15
-            reasons.append(f"Breezy conditions ({wind_speed:.1f} m/s)")
+            reasons.append(
+                f"Breezy conditions ({wind_speed:.1f} m/s)"
+            )
 
     # Temperature deductions
     if temperature is not None:
@@ -278,19 +281,19 @@ def calculate_viability(
     score = max(0, min(100, score))
 
     if score >= 80:
-        viability_status = "good"
+        status = "good"
         verdict = "Good time to go outside"
 
     elif score >= 55:
-        viability_status = "moderate"
+        status = "moderate"
         verdict = "Generally okay to go outside"
 
     elif score >= 35:
-        viability_status = "poor"
+        status = "poor"
         verdict = "Take precautions outdoors"
 
     else:
-        viability_status = "very_poor"
+        status = "very_poor"
         verdict = "Consider changing your plans"
 
     if not reasons:
@@ -300,7 +303,7 @@ def calculate_viability(
 
     return {
         "score": score,
-        "status": viability_status,
+        "status": status,
         "verdict": verdict,
         "reasons": reasons,
         "air_status": air_status,
@@ -309,12 +312,12 @@ def calculate_viability(
 
 
 # --------------------------------------------------
-# User-facing recommendations
+# Recommendation text
 # --------------------------------------------------
 
 def get_recommendation(result):
     """
-    Create simple recommendations from a viability result.
+    Create understandable advice from the calculated result.
     """
 
     status = result["status"]
@@ -323,18 +326,21 @@ def get_recommendation(result):
 
     general_messages = {
         "good": (
-            "Current conditions are suitable for most outdoor activities."
+            "Current conditions are suitable for most "
+            "outdoor activities."
         ),
         "moderate": (
-            "Outdoor activities are generally possible, but sensitive "
-            "people should pay attention to symptoms."
+            "Outdoor activities are generally possible, "
+            "but sensitive people should pay attention "
+            "to symptoms."
         ),
         "poor": (
-            "Consider shortening intense or prolonged outdoor activities."
+            "Consider shortening intense or prolonged "
+            "outdoor activities."
         ),
         "very_poor": (
-            "Consider postponing strenuous outdoor activities or choosing "
-            "an indoor alternative."
+            "Consider postponing strenuous outdoor activities "
+            "or choosing an indoor alternative."
         ),
     }
 
@@ -343,8 +349,8 @@ def get_recommendation(result):
             "Good conditions for walking, running and cycling."
         ),
         "moderate": (
-            "Moderate outdoor activity should be possible. Take breaks "
-            "if you feel discomfort."
+            "Moderate outdoor activity should be possible. "
+            "Take breaks if you feel discomfort."
         ),
         "poor": (
             "Choose a shorter or less intense outdoor activity."
@@ -354,12 +360,17 @@ def get_recommendation(result):
         ),
     }
 
-    sensitive_advice = []
+    sensitive_messages = []
 
-    if air_status in ["moderate", "poor", "very_poor", "extremely_poor"]:
-        sensitive_advice.append(
-            "People with asthma or breathing conditions should monitor "
-            "symptoms and keep prescribed medication available."
+    if air_status in [
+        "moderate",
+        "poor",
+        "very_poor",
+        "extremely_poor",
+    ]:
+        sensitive_messages.append(
+            "People with asthma or breathing conditions should "
+            "monitor symptoms and keep prescribed medication available."
         )
 
     if pollen_status in [
@@ -368,25 +379,19 @@ def get_recommendation(result):
         "very_poor",
         "extremely_poor",
     ]:
-        sensitive_advice.append(
-            "People with pollen allergies should consider their usual "
-            "allergy precautions."
+        sensitive_messages.append(
+            "People with pollen allergies should consider their "
+            "usual allergy precautions."
         )
 
-    if not sensitive_advice:
-        sensitive_advice.append(
-            "No specific warning is currently identified, but follow your "
-            "usual health advice."
-        )
-
-    if pollen_status == "unavailable":
-        sensitive_advice.append(
-            "Pollen data is currently unavailable and is not included "
-            "in the score."
+    if not sensitive_messages:
+        sensitive_messages.append(
+            "No specific warning is currently identified. "
+            "Continue to follow your usual health advice."
         )
 
     return {
         "general": general_messages[status],
         "exercise": exercise_messages[status],
-        "sensitive": " ".join(sensitive_advice),
+        "sensitive": " ".join(sensitive_messages),
     }
