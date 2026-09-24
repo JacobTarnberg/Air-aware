@@ -1,11 +1,14 @@
-import os
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
+
+# Live pollen data (Pollenrapporten) — replaces the historical CSV baseline.
+import pollen as pollen_api
+from locations import nearest_station
 
 # Optional persistent browser storage with automatic session fallback
 try:
@@ -45,7 +48,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-SCRIPT_DIR: str = os.path.dirname(os.path.abspath(__file__))
 OPEN_METEO_AIR_URL: str = "https://air-quality-api.open-meteo.com/v1/air-quality"
 
 # -----------------------------------------------------------------------------
@@ -446,7 +448,7 @@ def onboarding_dialog():
     st.subheader("📊 Choose Environmental Modules to Track")
     diag_pol = st.checkbox("🌫️ Air Quality & Pollutants", value=True, key="onboard_pol")
     diag_w = st.checkbox("🌤️ Weather Conditions (SMHI)", value=True, key="onboard_w")
-    diag_p = st.checkbox("🌾 Pollen Baseline (Historical Trap)", value=True, key="onboard_p")
+    diag_p = st.checkbox("🌾 Pollen Levels (Pollenrapporten)", value=True, key="onboard_p")
 
     st.divider()
     b1, b2 = st.columns(2)
@@ -482,27 +484,20 @@ if pending_city and pending_city in REGIONS_AND_CITIES.get(st.session_state.sele
 # -----------------------------------------------------------------------------
 # 5. Data Pipelines
 # -----------------------------------------------------------------------------
-@st.cache_data
-def load_historical_pollen_dataset() -> Tuple[pd.DataFrame, str]:
-    candidates = [
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen_3.csv"),
-        "goteborg_historical_pollen_3.csv",
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen_2.csv"),
-        "goteborg_historical_pollen_2.csv",
-        os.path.join(SCRIPT_DIR, "goteborg_historical_pollen.csv"),
-        "goteborg_historical_pollen.csv",
-    ]
-    pollen_path = next((p for p in candidates if os.path.exists(p)), None)
-    if not pollen_path:
-        return pd.DataFrame(), "None"
+@st.cache_data(ttl=86400, show_spinner=False)
+def load_pollen_stations() -> Dict[str, Tuple[float, float]]:
+    """station name -> (lat, lon), excluding the national 'Sverige' aggregate."""
+    return {
+        r["name"]: (float(r["latitude"]), float(r["longitude"]))
+        for r in pollen_api.get_regions()
+        if r["name"] != "Sverige"
+    }
 
-    df = pd.read_csv(pollen_path)
-    df.columns = df.columns.str.strip()
-    if "Date" in df.columns:
-        df["Date_Clean"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
-    if "Level_Value" in df.columns:
-        df["Level_Value"] = pd.to_numeric(df["Level_Value"], errors="coerce")
-    return df, os.path.basename(pollen_path)
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_pollen_history(station_name: str) -> pd.DataFrame:
+    """Full available pollen history for the given Pollenrapporten station."""
+    return pollen_api.get_pollen_history(station_name)
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -679,7 +674,7 @@ def calculate_viability(aqi, temp, wind, precip, pollen_level):
     if pollen_level is not None and not pd.isna(pollen_level):
         if pollen_level >= 5:
             score -= 20
-            reasons.append(f"High historical pollen load (Level {pollen_level}/6)")
+            reasons.append(f"High pollen load (Level {pollen_level}/6)")
         elif pollen_level >= 3:
             score -= 10
             reasons.append(f"Elevated seasonal pollen (Level {pollen_level}/6)")
@@ -720,7 +715,7 @@ with st.sidebar:
     st.markdown("**Active Signal Modules**")
     pol_on = st.checkbox("🌫️ Air Pollution Levels", value=st.session_state.pref_pollution)
     w_on = st.checkbox("🌤️ Weather Conditions", value=st.session_state.pref_weather)
-    p_on = st.checkbox("🌾 Pollen Baseline", value=st.session_state.pref_pollen)
+    p_on = st.checkbox("🌾 Pollen Levels", value=st.session_state.pref_pollen)
 
     if (
         w_on != st.session_state.pref_weather
@@ -754,7 +749,7 @@ st.caption(
     "Plain-language environmental conditions for daily life and athletic planning — designed to be readable for sensitive airways and asthma."
 )
 
-col_r, col_c, col_d, col_btn = st.columns([1.5, 1.5, 1.2, 0.8])
+col_r, col_c, col_btn = st.columns([1.8, 1.8, 0.8])
 region_list = list(REGIONS_AND_CITIES.keys())
 current_reg = st.session_state.selected_region
 reg_idx = region_list.index(current_reg) if current_reg in region_list else 0
@@ -779,9 +774,6 @@ with col_c:
         st.session_state.selected_city = chosen_city
         st.rerun()
 
-with col_d:
-    target_run_date = st.date_input("📅 Historical Baseline Date", value=date.today())
-
 with col_btn:
     st.write("")
     st.write("")
@@ -801,51 +793,58 @@ st.markdown(f"<div style='margin-bottom:12px;'>{scale_chips_html}</div>", unsafe
 
 lat, lon = REGIONS_AND_CITIES[st.session_state.selected_region][st.session_state.selected_city]
 
-# Date math for prior-year matching
-try:
-    prev_year_date = target_run_date.replace(year=target_run_date.year - 1)
-except ValueError:
-    prev_year_date = target_run_date.replace(year=target_run_date.year - 1, day=28)
-
-df_pollen, pollen_filename = load_historical_pollen_dataset()
 curr_pol, hourly_df = fetch_city_pollution(lat, lon)
 wx = fetch_city_weather(lat, lon)
 
-pollen_day_df = pd.DataFrame()
+# -------------------------------------------------------------
+# Live pollen (Pollenrapporten): resolve the selected city to its
+# nearest measuring station, then fetch the current grouped levels.
+# -------------------------------------------------------------
+pollen_history = pd.DataFrame()
+pollen_station = None
+pollen_grouped: Dict[str, Any] = {"status": "unavailable", "date": None, "summary": {}}
 pollen_benchmark: Dict[str, Any] = {
     "available": False,
     "level": None,
     "dominant": "None",
     "date": None,
-    "source": pollen_filename,
+    "source": "Pollenrapporten",
 }
-pollen_approximate = False
 
-if not df_pollen.empty and "Date_Clean" in df_pollen.columns:
-    exact_match = df_pollen[df_pollen["Date_Clean"] == prev_year_date]
-    if not exact_match.empty:
-        pollen_day_df = exact_match
-        used_pollen_date = prev_year_date
-    else:
-        df_pollen["date_dt"] = pd.to_datetime(df_pollen["Date_Clean"])
-        prev_target_dt = pd.to_datetime(prev_year_date)
-        df_pollen["day_diff"] = (df_pollen["date_dt"] - prev_target_dt).abs()
-        closest_row = df_pollen.loc[df_pollen["day_diff"].idxmin()]
-        if closest_row["day_diff"] <= timedelta(days=14):
-            pollen_day_df = df_pollen[df_pollen["Date_Clean"] == closest_row["Date_Clean"]]
-            used_pollen_date = closest_row["Date_Clean"]
-            pollen_approximate = True
+try:
+    _stations = load_pollen_stations()
+    pollen_station = nearest_station(lat, lon, _stations)
+    pollen_history = load_pollen_history(pollen_station)
+except Exception:
+    pollen_history = pd.DataFrame()
 
-    if not pollen_day_df.empty:
-        max_level = int(pollen_day_df["Level_Value"].max()) if pollen_day_df["Level_Value"].notna().any() else 0
-        top_allergens = pollen_day_df[pollen_day_df["Level_Value"] == max_level]["Pollen"].tolist()
-        pollen_benchmark = {
-            "available": True,
-            "level": max_level,
-            "dominant": ", ".join(top_allergens) if top_allergens else "None",
-            "date": str(used_pollen_date),
-            "source": pollen_filename,
-        }
+if not pollen_history.empty:
+    pollen_grouped = pollen_api.get_latest_grouped(pollen_history)
+    latest_day = pollen_grouped.get("date")
+    summary = pollen_grouped.get("summary", {})
+
+    # Highest numeric level across all pollen on the most recent day,
+    # plus the dominant pollen name(s), for the viability score + card.
+    max_level = 0
+    dominant: List[str] = []
+    for cat_data in summary.values():
+        for entry in cat_data.get("pollen", []):
+            numeric = entry.get("numeric_level")
+            if isinstance(numeric, (int, float)) and not pd.isna(numeric):
+                numeric = int(numeric)
+                if numeric > max_level:
+                    max_level = numeric
+                    dominant = [entry.get("pollen")]
+                elif numeric == max_level and numeric > 0:
+                    dominant.append(entry.get("pollen"))
+
+    pollen_benchmark = {
+        "available": True,
+        "level": max_level,
+        "dominant": ", ".join(d for d in dominant if d) if dominant else "None",
+        "date": str(latest_day) if latest_day else None,
+        "source": f"Pollenrapporten · {pollen_station}",
+    }
 
 aqi_val = curr_pol.get("european_aqi")
 temp_val = wx.get("temperature")
@@ -947,21 +946,90 @@ if st.session_state.pref_weather:
     w_cols[2].metric("Wind Speed", display_value(wind_val, "m/s"))
     w_cols[3].metric("Precipitation", display_value(rain_val, "mm"))
 
-# Pollen Baseline (Full width with dedicated container spacing)
+# Pollen (live Pollenrapporten data, full width)
 if st.session_state.pref_pollen:
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
-    st.markdown("### 🌾 Pollen Baseline & Seasonal Allergen Radar")
-    st.caption(f"Source: {pollen_benchmark.get('source', 'Unavailable')}")
-    p_cols = st.columns(3)
-    p_cols[0].metric("Max Level", display_value(pollen_benchmark.get("level"), "/ 6", 0))
-    p_cols[1].metric("Dominant Pollen", pollen_benchmark.get("dominant", "None"))
-    p_cols[2].metric("Sample Date", pollen_benchmark.get("date") or "Unavailable")
+    st.markdown("### 🌾 Pollen Levels & Seasonal Allergen Radar")
+    st.caption(f"Source: {pollen_benchmark.get('source', 'Pollenrapporten')}")
 
-    if pollen_benchmark.get("available"):
-        note = "Nearest sample within 14 days." if pollen_approximate else "Exact historical match found."
-        st.caption(f"{note} Historical reference for allergy tracking.")
+    if not pollen_benchmark.get("available"):
+        st.info("No pollen data is currently available for the nearest station.")
     else:
-        st.caption("No historical observations available within 14 days of this date.")
+        summary = pollen_grouped.get("summary", {})
+        latest_day = pollen_grouped.get("date")
+
+        # Grouped category levels (Tree / Grass / Weed).
+        cat_emoji = {"Tree pollen": "🌳", "Grass pollen": "🌾", "Weed pollen": "🌿"}
+        cat_cols = st.columns(3)
+        for col, category in zip(cat_cols, ["Tree pollen", "Grass pollen", "Weed pollen"]):
+            level = summary.get(category, {}).get("level", "unavailable")
+            col.metric(f"{cat_emoji[category]} {category}", level.upper())
+
+        p_cols = st.columns(3)
+        p_cols[0].metric("Max Level", display_value(pollen_benchmark.get("level"), "/ 6", 0))
+        p_cols[1].metric("Dominant Pollen", pollen_benchmark.get("dominant", "None"))
+        p_cols[2].metric("Latest Reading", pollen_benchmark.get("date") or "Unavailable")
+
+        if latest_day and latest_day < date.today():
+            st.caption(
+                "Pollen forecasting is out of season. Showing the most recent "
+                "available reading — explore past seasons in the chart below."
+            )
+
+        # Historical time-series chart (daily max per category), gaps preserved.
+        with st.expander("📈 Historical pollen levels", expanded=False):
+            hist = pollen_history.copy()
+            chart_df = (
+                hist.groupby(["date", "category"], as_index=False)["numeric_level"].max()
+            )
+            if not chart_df.empty:
+                chart_df["date"] = pd.to_datetime(chart_df["date"])
+                full_days = pd.date_range(
+                    chart_df["date"].min(), chart_df["date"].max(), freq="D"
+                )
+                series = []
+                for name, grp in chart_df.groupby("category"):
+                    s = (
+                        grp.set_index("date")["numeric_level"]
+                        .reindex(full_days)
+                        .rename_axis("date")
+                        .reset_index()
+                    )
+                    s["numeric_level"] = s["numeric_level"].where(
+                        s["numeric_level"].notna(),
+                        s["numeric_level"].interpolate(limit=2, limit_area="inside"),
+                    )
+                    s["category"] = name
+                    series.append(s)
+                chart_df = pd.concat(series, ignore_index=True)
+
+                pollen_color_map = {
+                    "Tree pollen": "#2e7d32",
+                    "Grass pollen": "#00897b",
+                    "Weed pollen": "#8e24aa",
+                    "Other": "#9e9e9e",
+                }
+                fig_pollen = px.line(
+                    chart_df,
+                    x="date",
+                    y="numeric_level",
+                    color="category",
+                    color_discrete_map=pollen_color_map,
+                    labels={"date": "Date", "numeric_level": "Level (0–6)", "category": ""},
+                )
+                fig_pollen.update_traces(connectgaps=False, line=dict(width=2))
+                fig_pollen.update_yaxes(range=[-0.2, 6.2], dtick=1)
+                fig_pollen.update_layout(
+                    template="plotly_white",
+                    height=340,
+                    margin=dict(l=10, r=10, t=20, b=10),
+                    hovermode="x unified",
+                    legend_title_text="",
+                )
+                st.plotly_chart(fig_pollen, use_container_width=True)
+                st.caption("Lines break where no data was reported (off-season gaps).")
+            else:
+                st.info("No historical pollen readings are available.")
 
 # -------------------------------------------------------------
 # 11. Visual Forecasts & Driver Analysis
@@ -1110,5 +1178,6 @@ if not region_df.empty:
 
 st.caption(
     f"Sources: Open-Meteo Air Quality (CAMS Europe) | {weather_source} Weather | "
-    f"{pollen_benchmark.get('source', 'Unavailable')} Pollen | Location: {st.session_state.selected_city}, {st.session_state.selected_region}"
+    f"{pollen_benchmark.get('source', 'Pollenrapporten')} | "
+    f"Location: {st.session_state.selected_city}, {st.session_state.selected_region}"
 )

@@ -1,151 +1,245 @@
-import datetime
-import time
+"""
+Pollenrapporten API layer.
+
+Provides current + historical pollen data, with pollen names resolved
+from the /pollen-types endpoint and grouped into Tree / Grass / Weed / Other.
+"""
+
+from typing import Optional
+
 import pandas as pd
 import requests
 
 BASE_URL = "https://api.pollenrapporten.se/v1"
-OUTPUT_FILE = "goteborg_historical_pollen.csv"
+
+# ---------------------------------------------------------
+# Pollen grouping
+# ---------------------------------------------------------
+# Names are matched case-insensitively against the API's Swedish names
+# (from /pollen-types): Hassel, Al, Tall, "Sälg och viden", Alm, Björk,
+# Bok, Ek, Gran, Gräs, Gråbo, Malörtsambrosia, Alternaria, Cladosporium,
+# Epicoccum.
+
+POLLEN_GROUPS = {
+    "Tree pollen": {
+        "hassel", "al", "alm", "björk", "bok", "ek", "gran", "tall",
+        "sälg och viden", "sälg & viden",
+    },
+    "Grass pollen": {
+        "gräs",
+    },
+    "Weed pollen": {
+        "gråbo", "malörtsambrosia",
+    },
+}
 
 
-def get_lookups():
-    """Fetch lookup maps for regions, pollen types, and level definitions."""
-    headers = {"User-Agent": "Mozilla/5.0"}
+def get_pollen_group(pollen_name: str) -> str:
+    """Convert an individual pollen type into an application category."""
+    name = (pollen_name or "").strip().lower()
+    for group, pollen_types in POLLEN_GROUPS.items():
+        if name in pollen_types:
+            return group
+    return "Other"
 
-    # 1. Regions
-    r_reg = requests.get(f"{BASE_URL}/regions", headers=headers).json()
-    reg_items = r_reg.get("items", r_reg) if isinstance(r_reg, dict) else r_reg
-    regions = {r["id"]: r.get("name") for r in reg_items if isinstance(r, dict) and "id" in r}
 
-    # Find Göteborg
-    goteborg_id = next(
-        (rid for rid, name in regions.items() if "göteborg" in name.lower() or "gothenburg" in name.lower()),
-        list(regions.keys())[0] if regions else None
-    )
+# ---------------------------------------------------------
+# Level conversion (API uses a 0-6 scale)
+# ---------------------------------------------------------
 
-    # 2. Pollen Types
-    r_types = requests.get(f"{BASE_URL}/pollen-types", headers=headers).json()
-    type_items = r_types.get("items", r_types) if isinstance(r_types, dict) else r_types
-    pollen_types = {}
-    for t in type_items:
-        if isinstance(t, dict) and "id" in t:
-            # Use Swedish name or general name
-            name = t.get("name") or t.get("swedish_name") or t.get("label") or str(t["id"])
-            pollen_types[t["id"]] = name
+LEVEL_MAP = {
+    0: "none",
+    1: "low",
+    2: "low",
+    3: "moderate",
+    4: "high",
+    5: "very high",
+    6: "very high",
+}
 
-    # 3. Level Definitions (0=No, 1=Low, 2=Moderate, 3=High, etc.)
-    levels = {}
+LEVEL_ORDER = {
+    "unavailable": -1,
+    "none": 0,
+    "low": 1,
+    "moderate": 2,
+    "high": 3,
+    "very high": 4,
+}
+
+
+def convert_level(level) -> str:
+    """Convert a numeric forecast level into a human-readable level."""
+    if level is None:
+        return "unavailable"
     try:
-        r_levels = requests.get(f"{BASE_URL}/pollen-level-definitions", headers=headers).json()
-        lvl_items = r_levels.get("items", r_levels) if isinstance(r_levels, dict) else r_levels
-        for lvl in lvl_items:
-            if isinstance(lvl, dict) and "id" in lvl:
-                levels[lvl["id"]] = lvl.get("description") or lvl.get("name") or str(lvl.get("level"))
-    except Exception:
-        pass
-
-    return goteborg_id, regions, pollen_types, levels
+        level = int(level)
+    except (TypeError, ValueError):
+        return "unavailable"
+    return LEVEL_MAP.get(level, "unavailable")
 
 
-def fetch_forecast_records(region_id, start_date, end_date):
-    """Fetch forecasts within a date window."""
-    params = {
-        "region_id": region_id,
-        "start_date": start_date,
-        "end_date": end_date,
-        "limit": 100
-    }
-    resp = requests.get(f"{BASE_URL}/forecasts", params=params, timeout=20)
-    if resp.status_code != 200:
-        return []
+# ---------------------------------------------------------
+# API helpers
+# ---------------------------------------------------------
 
-    raw = resp.json()
-    if isinstance(raw, dict):
-        return raw.get("items") or raw.get("data", {}).get("items") or [raw]
-    return raw if isinstance(raw, list) else []
-
-
-def main():
-    print("1. Fetching lookup definitions (regions, pollen types, levels)...")
-    goteborg_id, regions_map, pollen_map, level_map = get_lookups()
-    city_name = regions_map.get(goteborg_id, "Göteborg")
-    print(f"   Target Region: {city_name} (ID: {goteborg_id})")
-    print(f"   Loaded {len(pollen_map)} pollen species definitions.")
-
-    # Historical query window
-    current_year = datetime.date.today().year
-    years = list(range(2021, current_year + 1))
-
-    all_rows = []
-
-    print("\n2. Fetching forecasts...")
-    for year in years:
-        start_str = f"{year}-03-01"
-        end_str = f"{year}-09-30" if year < current_year else datetime.date.today().isoformat()
-
-        print(f"   -> Querying season {year} ({start_str} to {end_str})...")
-        forecast_items = fetch_forecast_records(goteborg_id, start_str, end_str)
-
-        for fc in forecast_items:
-            if not isinstance(fc, dict):
-                continue
-
-            # Check for levelSeries
-            series = fc.get("levelSeries") or fc.get("level_series") or fc.get("series") or []
-            
-            # If no levelSeries array, inspect items directly
-            if not series and "forecastItems" in fc:
-                series = fc["forecastItems"]
-
-            for entry in series:
-                # 1. Resolve date
-                date_val = entry.get("date") or fc.get("startDate")
-
-                # 2. Resolve pollen name
-                p_id = entry.get("pollen_id") or entry.get("pollenId") or entry.get("pollen_type_id")
-                p_obj = entry.get("pollenType") or entry.get("pollen_type")
-                if isinstance(p_obj, dict):
-                    pollen_name = p_obj.get("name") or pollen_map.get(p_obj.get("id"), "Unknown")
-                else:
-                    pollen_name = pollen_map.get(p_id, entry.get("name", "Unknown"))
-
-                # 3. Resolve level value & description
-                lvl_id = entry.get("level_id") or entry.get("levelId") or entry.get("level")
-                if isinstance(lvl_id, dict):
-                    val = lvl_id.get("value") or lvl_id.get("level")
-                    desc = lvl_id.get("description") or lvl_id.get("name")
-                else:
-                    val = lvl_id
-                    desc = level_map.get(lvl_id, f"Level {lvl_id}" if lvl_id is not None else None)
-
-                all_rows.append({
-                    "Date": date_val,
-                    "Region": city_name,
-                    "Pollen": pollen_name,
-                    "Level_Value": val,
-                    "Level_Description": desc,
-                    "Forecast_Start": fc.get("startDate"),
-                    "Forecast_End": fc.get("endDate")
-                })
-
-        time.sleep(0.2)
-
-    if not all_rows:
-        print("\nNo rows generated. Printing sample raw response for inspection:")
-        test_resp = requests.get(f"{BASE_URL}/forecasts?region_id={goteborg_id}&limit=1").json()
-        print(test_resp)
-        return
-
-    df = pd.DataFrame(all_rows)
-    # Remove records that lack pollen identification
-    df.dropna(subset=["Pollen"], inplace=True)
-    df = df[~df["Pollen"].isin(["All", "Unknown"])]
-    df.drop_duplicates(subset=["Date", "Region", "Pollen"], inplace=True)
-    df.sort_values(by=["Date", "Pollen"], inplace=True)
-
-    df.to_csv(OUTPUT_FILE, index=False, encoding="utf-8-sig")
-    print(f"\nSuccess! Written {len(df)} populated records to '{OUTPUT_FILE}'.")
-    print(df.head(10))
+def api_get(endpoint: str, params: Optional[dict] = None) -> dict:
+    """Generic GET request to Pollenrapporten."""
+    url = f"{BASE_URL}{endpoint}"
+    response = requests.get(
+        url,
+        params=params,
+        timeout=15,
+        headers={"User-Agent": "PollenStreamlitApp/1.0"},
+    )
+    response.raise_for_status()
+    return response.json()
 
 
-if __name__ == "__main__":
-    main()
+def api_get_all(endpoint: str, params: Optional[dict] = None) -> list:
+    """GET every page of a paginated endpoint and return all items."""
+    params = dict(params or {})
+    params.setdefault("limit", 100)
+    offset = 0
+    items: list = []
+    while True:
+        params["offset"] = offset
+        data = api_get(endpoint, params)
+        page = data.get("items", [])
+        items.extend(page)
+        meta = data.get("_meta", {})
+        total = meta.get("totalRecords", len(items))
+        if len(items) >= total or not page:
+            break
+        offset += len(page)
+    return items
+
+
+# ---------------------------------------------------------
+# Regions & pollen types
+# ---------------------------------------------------------
+
+def get_regions() -> list:
+    """Return all regions available from Pollenrapporten."""
+    return api_get_all("/regions")
+
+
+def find_region(region_name: str) -> Optional[dict]:
+    """Find a region record by (case-insensitive) name."""
+    target = region_name.strip().lower()
+    for region in get_regions():
+        if region["name"].strip().lower() == target:
+            return region
+    return None
+
+
+def get_pollen_name_map() -> dict:
+    """Return a mapping of pollenId -> human-readable name."""
+    items = api_get_all("/pollen-types")
+    return {item["id"]: item["name"] for item in items}
+
+
+# ---------------------------------------------------------
+# Forecast fetching
+# ---------------------------------------------------------
+
+def _forecast_rows(forecasts: list, name_map: dict) -> list:
+    """Flatten forecast items into per-pollen, per-day rows."""
+    rows = []
+    for forecast in forecasts:
+        f_start = forecast.get("startDate")
+        f_end = forecast.get("endDate")
+        for entry in forecast.get("levelSeries", []):
+            pollen_id = entry.get("pollenId")
+            name = name_map.get(pollen_id, str(pollen_id))
+            numeric = entry.get("level")
+            rows.append(
+                {
+                    "pollen_id": pollen_id,
+                    "pollen": name,
+                    "category": get_pollen_group(name),
+                    "numeric_level": numeric,
+                    "level": convert_level(numeric),
+                    "time": entry.get("time"),
+                    "forecast_start": f_start,
+                    "forecast_end": f_end,
+                }
+            )
+    return rows
+
+
+def get_pollen_history(region_name: str) -> pd.DataFrame:
+    """
+    Return the full available pollen history for a region as a DataFrame:
+        columns: pollen_id, pollen, category, numeric_level, level, time (datetime)
+
+    Data comes entirely from the Pollenrapporten forecasts endpoint.
+    """
+    region = find_region(region_name)
+    if region is None:
+        raise ValueError(f"Region '{region_name}' was not found.")
+
+    name_map = get_pollen_name_map()
+    forecasts = api_get_all(
+        "/forecasts", params={"region_id": region["id"]}
+    )
+    rows = _forecast_rows(forecasts, name_map)
+    if not rows:
+        return pd.DataFrame(
+            columns=[
+                "pollen_id", "pollen", "category",
+                "numeric_level", "level", "time",
+                "forecast_start", "forecast_end", "in_window",
+            ]
+        )
+
+    df = pd.DataFrame(rows)
+    df["time"] = pd.to_datetime(df["time"], errors="coerce")
+    df = df.dropna(subset=["time"]).sort_values("time")
+    # Collapse duplicate (pollen, day) entries to the max level of the day.
+    df["date"] = df["time"].dt.date
+
+    # Flag rows whose day falls within the issuing forecast's stated window.
+    # Days beyond forecast_end are low-confidence "overhang" projections.
+    fstart = pd.to_datetime(df["forecast_start"], errors="coerce").dt.date
+    fend = pd.to_datetime(df["forecast_end"], errors="coerce").dt.date
+    df["in_window"] = (df["date"] >= fstart) & (df["date"] <= fend)
+    # If a forecast lacks window dates, treat the row as in-window.
+    df.loc[fstart.isna() | fend.isna(), "in_window"] = True
+
+    df = (
+        df.sort_values("numeric_level")
+        .drop_duplicates(subset=["pollen_id", "date"], keep="last")
+        .sort_values("time")
+        .reset_index(drop=True)
+    )
+    return df
+
+
+def aggregate_group_level(levels) -> str:
+    """Highest reported level for a category (ignoring unavailable)."""
+    valid = [lvl for lvl in levels if lvl in LEVEL_ORDER and lvl != "unavailable"]
+    if not valid:
+        return "unavailable"
+    return max(valid, key=lambda x: LEVEL_ORDER[x])
+
+
+def get_latest_grouped(df: pd.DataFrame) -> dict:
+    """
+    From a history DataFrame, take the most recent day that has data and
+    group it into Tree / Grass / Weed / Other.
+    """
+    if df.empty:
+        return {"status": "unavailable", "date": None, "summary": {}}
+
+    latest_date = df["date"].max()
+    day = df[df["date"] == latest_date]
+
+    summary = {}
+    for category in ["Tree pollen", "Grass pollen", "Weed pollen", "Other"]:
+        cat = day[day["category"] == category]
+        summary[category] = {
+            "level": aggregate_group_level(cat["level"].tolist()),
+            "pollen": cat[["pollen", "level", "numeric_level"]].to_dict("records"),
+        }
+
+    return {"status": "available", "date": latest_date, "summary": summary}
