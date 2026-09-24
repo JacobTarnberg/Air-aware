@@ -65,13 +65,12 @@ st.markdown(
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
-    .metric-code {font-weight: 400; font-size: 0.95rem; color: #64748b;}
-    .metric-desc {font-weight: 800; font-size: 1.05rem; color: #1e293b; margin-top: 2px;}
-    .metric-value {font-weight: 850; font-size: 1.35rem; margin: 6px 0 2px 0;}
-    .metric-status {font-weight: 700; font-size: 0.86rem; line-height: 1.25;}
-    .small-muted {color: #64748b; font-size: 0.82rem; line-height: 1.25;}
-    .map-hint {padding: 10px 14px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.88rem; margin: 8px 0 14px 0;}
-    .section-box {background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin-bottom: 24px;}
+    .metric-name {font-weight:800; font-size:1.05rem;}
+    .metric-value {font-weight:850; font-size:1.35rem; margin:4px 0 2px 0;}
+    .metric-status {font-weight:700; font-size:.86rem; line-height: 1.25;}
+    .small-muted {color:#64748b; font-size:.82rem; line-height: 1.25;}
+    .map-hint {padding:10px 14px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;font-size:.88rem;margin:8px 0 14px 0;}
+    .section-box {background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:24px;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -336,7 +335,6 @@ POLLUTANTS = {
 }
 
 def get_pollen_color(level_num: Any) -> str:
-    """Map pollen numeric levels (0-7) to grey (0) and AQI gradient."""
     if level_num is None or pd.isna(level_num):
         return "#94A3B8"
     try:
@@ -758,7 +756,7 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
-    if st.button("Reset preferences", use_container_width=True):
+    if st.button("Reconfigure Preferences (Onboard)", use_container_width=True):
         if HAS_LOCAL_STORAGE:
             try:
                 local_storage.deleteItem("air_aware_preferences")
@@ -848,9 +846,7 @@ if not pollen_history.empty:
 
     max_level = 0
     dominant: List[str] = []
-    
-    # Calculate dominant pollen and verify actual readings
-    for cat_name, cat_data in summary.items():
+    for cat_data in summary.values():
         for entry in cat_data.get("pollen", []):
             numeric = entry.get("numeric_level")
             if isinstance(numeric, (int, float)) and not pd.isna(numeric):
@@ -910,40 +906,81 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Weather Conditions (First Signal Module)
+# -------------------------------------------------------------
+# 12. Environmental Signal Modules (Pollution, Weather, Pollen)
+# -------------------------------------------------------------
+if st.session_state.pref_pollution:
+    st.markdown("### 🌫️ Air Pollution & Health Indicators")
+    st.markdown(
+        f'<div class="map-hint">Specific pollution levels for <b>{st.session_state.selected_city}</b>. Click any pollutant card to view its health details and severity limits.</div>',
+        unsafe_allow_html=True,
+    )
+
+    card_keys = ["PM2.5", "PM10", "NO₂", "O₃", "SO₂"]
+    p_cols = st.columns(5)
+    
+    for col, name in zip(p_cols, card_keys):
+        p_info = POLLUTANTS[name]
+        paqi = curr_pol.get(p_info["aqi_key"]) if p_info["aqi_key"] else None
+
+        if p_info["aqi_key"]:
+            pmeta = level_info(paqi)
+            main_display = pmeta["level"]
+            sub_status = pmeta["feel"]
+            card_color = pmeta["color"]
+        else:
+            main_display = "Normal"
+            sub_status = "Trace Level"
+            card_color = "#0F766E"
+
+        with col:
+            st.markdown(
+                f"""
+                <div class="metric-card" style="border-top:5px solid {card_color};">
+                    <div>
+                        <div class="metric-name">{name}</div>
+                        <div class="small-muted">{p_info['short']}</div>
+                    </div>
+                    <div>
+                        <div class="metric-value" style="color:{card_color};">{main_display}</div>
+                        <div class="metric-status" style="color:#475569;">{sub_status}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            if st.button(f"Info: {name}", key=f"btn_pol_{name}", use_container_width=True):
+                show_pollutant_details(name)
+
+# Weather Conditions
 if st.session_state.pref_weather:
     st.markdown("<div style='margin-top: 18px;'></div>", unsafe_allow_html=True)
     st.markdown("### 🌤️ Live Weather Conditions")
     st.caption(f"Source: {weather_source}")
     w_cols = st.columns(4)
     w_cols[0].metric("Temperature", display_value(temp_val, "°C"))
-    w_cols[1].metric("Humidity", display_value(humidity_val, "%", 0))
+    w_cols[1].metric("Relative Humidity", display_value(humidity_val, "%", 0))
     w_cols[2].metric("Wind Speed", display_value(wind_val, "m/s"))
-    w_cols[3].metric("Rain", display_value(rain_val, "mm"))
+    w_cols[3].metric("Precipitation", display_value(rain_val, "mm"))
 
-# Pollen Module (Second Signal Module)
+# Pollen Module (0–7 scale & guaranteed Historical Pollen graph display)
 if st.session_state.pref_pollen:
     st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
     st.markdown("### 🌾 Pollen Levels & Seasonal Allergen Radar")
     st.caption(f"Source: {pollen_benchmark.get('source', 'Pollenrapporten')}")
 
-    summary = pollen_grouped.get("summary", {})
-    latest_day = pollen_grouped.get("date")
-
-    if not summary:
+    if not pollen_benchmark.get("available"):
         st.info("Pollen forecasting is currently out of season or live readings are unavailable for this station. You can inspect all historical readings and past seasons in the graph below.")
     else:
+        summary = pollen_grouped.get("summary", {})
+        latest_day = pollen_grouped.get("date")
+
         cat_emoji = {"Tree pollen": "🌳", "Grass pollen": "🌾", "Weed pollen": "🌿"}
         cat_cols = st.columns(3)
         for col, category in zip(cat_cols, ["Tree pollen", "Grass pollen", "Weed pollen"]):
             cat_data = summary.get(category, {})
-            entries = cat_data.get("pollen", [])
-            
-            # Reliably calculate highest numeric level within the category
-            numeric_vals = [e.get("numeric_level") for e in entries if isinstance(e.get("numeric_level"), (int, float))]
-            cat_numeric = max(numeric_vals) if numeric_vals else 0
-            
-            color = get_pollen_color(cat_numeric)
+            level_num = cat_data.get("numeric_level", 0) 
+            color = get_pollen_color(level_num)
             label = cat_data.get("level", "unavailable").capitalize()
 
             with col:
@@ -959,15 +996,15 @@ if st.session_state.pref_pollen:
                     )
                     st.caption("Individual pollen types in this group (translated to English):")
 
-                    sorted_entries = sorted(
-                        entries,
+                    entries = sorted(
+                        cat_data.get("pollen", []),
                         key=lambda e: (e.get("numeric_level") or -1),
                         reverse=True,
                     )
-                    if not sorted_entries:
+                    if not entries:
                         st.info("No individual pollen types reported for this group.")
                     else:
-                        for entry in sorted_entries:
+                        for entry in entries:
                             raw_name = entry.get("pollen", "Unknown")
                             eng_name = translate_pollen_name(raw_name)
                             e_num = entry.get("numeric_level")
@@ -1006,13 +1043,7 @@ if st.session_state.pref_pollen:
             unsafe_allow_html=True,
         )
 
-        if latest_day and latest_day < date.today():
-            st.caption(
-                "Pollen forecasting is out of season. Showing the most recent "
-                "available reading — explore past seasons in the chart below."
-            )
-
-    # Historical time-series chart
+    # Historical time-series chart rendered independently so it is always accessible
     st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
     with st.expander("📈 Historical pollen levels", expanded=True):
         if not pollen_history.empty:
@@ -1025,8 +1056,7 @@ if st.session_state.pref_pollen:
             group_col = "category" if pollen_view == "Category" else "pollen"
 
             hist = pollen_history.copy()
-            if pollen_view == "Individual pollen type":
-                hist["pollen"] = hist["pollen"].apply(translate_pollen_name)
+            hist["pollen"] = hist["pollen"].apply(translate_pollen_name)
             
             chart_df = (
                 hist.groupby(["date", group_col], as_index=False)["numeric_level"].max()
@@ -1096,57 +1126,10 @@ if st.session_state.pref_pollen:
             st.info("No historical pollen readings are available for the selected station.")
 
 # -------------------------------------------------------------
-# 12. Pollution Boxes (Moved directly below Pollen)
-# -------------------------------------------------------------
-if st.session_state.pref_pollution:
-    st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
-    st.markdown("### 🌫️ Air Pollution & Health Indicators")
-    st.markdown(
-        f'<div class="map-hint">Specific pollution levels for <b>{st.session_state.selected_city}</b>. Click any pollutant card to view its health details and severity limits.</div>',
-        unsafe_allow_html=True,
-    )
-
-    card_keys = ["PM2.5", "PM10", "NO₂", "O₃", "SO₂"]
-    p_cols = st.columns(5)
-    
-    for col, name in zip(p_cols, card_keys):
-        p_info = POLLUTANTS[name]
-        paqi = curr_pol.get(p_info["aqi_key"]) if p_info["aqi_key"] else None
-
-        if p_info["aqi_key"]:
-            pmeta = level_info(paqi)
-            main_display = pmeta["level"]
-            sub_status = pmeta["feel"]
-            card_color = pmeta["color"]
-        else:
-            main_display = "Normal"
-            sub_status = "Trace Level"
-            card_color = "#0F766E"
-
-        with col:
-            st.markdown(
-                f"""
-                <div class="metric-card" style="border-top:5px solid {card_color};">
-                    <div>
-                        <div class="metric-code">{name}</div>
-                        <div class="metric-desc">{p_info['short']}</div>
-                    </div>
-                    <div>
-                        <div class="metric-value" style="color:{card_color};">{main_display}</div>
-                        <div class="metric-status" style="color:#475569;">{sub_status}</div>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            if st.button(f"Info: {name}", key=f"btn_pol_{name}", use_container_width=True):
-                show_pollutant_details(name)
-
-# -------------------------------------------------------------
 # 13. Dynamic Severity Scale Dropdown
 # -------------------------------------------------------------
 st.markdown("---")
-st.markdown("### Dynamic Pollutant Severity Scale")
+st.markdown("###  Dynamic Pollutant Severity Scale")
 st.caption("Select any pollutant below to view its full concentration scale and index scoring bands side-by-side.")
 
 scale_col, _ = st.columns([1.2, 1])
