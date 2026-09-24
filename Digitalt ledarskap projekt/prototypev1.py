@@ -6,7 +6,7 @@ import plotly.express as px
 import requests
 import streamlit as st
 
-# Live pollen data (Pollenrapporten) — replaces the historical CSV baseline.
+# Live pollen data (Pollenrapporten)
 import pollen as pollen_api
 from locations import nearest_station
 
@@ -958,17 +958,92 @@ if st.session_state.pref_pollen:
         summary = pollen_grouped.get("summary", {})
         latest_day = pollen_grouped.get("date")
 
-        # Grouped category levels (Tree / Grass / Weed).
+        # Readable colours for the 0–6 pollen scale (calm, high-contrast).
+        POLLEN_LEVEL_STYLE = {
+            "none": ("#0F766E", "None"),
+            "low": ("#2563EB", "Low"),
+            "moderate": ("#7C3AED", "Moderate"),
+            "high": ("#DB2777", "High"),
+            "very high": ("#7F1D5A", "Very high"),
+            "unavailable": ("#94A3B8", "No reading"),
+        }
+
+        # Grouped category levels (Tree / Grass / Weed) as clickable popovers.
+        # Clicking a category opens a popup listing its individual pollen types.
         cat_emoji = {"Tree pollen": "🌳", "Grass pollen": "🌾", "Weed pollen": "🌿"}
         cat_cols = st.columns(3)
         for col, category in zip(cat_cols, ["Tree pollen", "Grass pollen", "Weed pollen"]):
-            level = summary.get(category, {}).get("level", "unavailable")
-            col.metric(f"{cat_emoji[category]} {category}", level.upper())
+            cat_data = summary.get(category, {})
+            level = cat_data.get("level", "unavailable")
+            color, label = POLLEN_LEVEL_STYLE.get(level, POLLEN_LEVEL_STYLE["unavailable"])
 
-        p_cols = st.columns(3)
-        p_cols[0].metric("Max Level", display_value(pollen_benchmark.get("level"), "/ 6", 0))
-        p_cols[1].metric("Dominant Pollen", pollen_benchmark.get("dominant", "None"))
-        p_cols[2].metric("Latest Reading", pollen_benchmark.get("date") or "Unavailable")
+            with col:
+                with st.popover(
+                    f"{cat_emoji[category]} {category} — {label}",
+                    use_container_width=True,
+                ):
+                    st.markdown(f"### {cat_emoji[category]} {category}")
+                    st.markdown(
+                        f"**Overall level:** "
+                        f"<span style='color:{color};font-weight:800;'>{label}</span>",
+                        unsafe_allow_html=True,
+                    )
+                    st.caption("Individual pollen types in this group (latest reading):")
+
+                    entries = sorted(
+                        cat_data.get("pollen", []),
+                        key=lambda e: (e.get("numeric_level") or -1),
+                        reverse=True,
+                    )
+                    if not entries:
+                        st.info("No individual pollen types reported for this group.")
+                    else:
+                        for entry in entries:
+                            name = entry.get("pollen", "Unknown")
+                            e_level = entry.get("level", "unavailable")
+                            e_num = entry.get("numeric_level")
+                            e_color, e_label = POLLEN_LEVEL_STYLE.get(
+                                e_level, POLLEN_LEVEL_STYLE["unavailable"]
+                            )
+                            num_txt = f" ({e_num}/6)" if isinstance(e_num, (int, float)) else ""
+                            st.markdown(
+                                f"<div style='display:flex;align-items:center;gap:8px;"
+                                f"padding:4px 0;'>"
+                                f"<span style='width:12px;height:12px;border-radius:50%;"
+                                f"background:{e_color};display:inline-block;'></span>"
+                                f"<span style='flex:1;'>{name}</span>"
+                                f"<span style='color:{e_color};font-weight:700;'>"
+                                f"{e_label}{num_txt}</span>"
+                                f"</div>",
+                                unsafe_allow_html=True,
+                            )
+
+        # Human-readable summary line under the cards.
+        max_level = pollen_benchmark.get("level")
+        overall_word = POLLEN_LEVEL_STYLE.get(
+            pollen_api.convert_level(max_level), POLLEN_LEVEL_STYLE["unavailable"]
+        )[1]
+
+        # Only surface "dominant" pollen when it's actually elevated (level ≥ 2).
+        dominant = pollen_benchmark.get("dominant", "None")
+        dominant_line = ""
+        if isinstance(max_level, (int, float)) and max_level >= 2 and dominant not in ("", "None"):
+            dominant_line = f" &nbsp;·&nbsp; Main allergen(s): <b>{dominant}</b>"
+
+        try:
+            reading_date = datetime.strptime(str(latest_day), "%Y-%m-%d").strftime("%d %b %Y")
+        except (ValueError, TypeError):
+            reading_date = str(latest_day) if latest_day else "Unavailable"
+
+        st.markdown(
+            f"""
+            <div style="margin-top:12px;color:#334155;font-size:.95rem;">
+                Highest pollen right now: <b>{overall_word}</b> ({max_level}/6){dominant_line}
+                <span style="color:#64748b;"> &nbsp;·&nbsp; Latest reading: {reading_date}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         if latest_day and latest_day < date.today():
             st.caption(
@@ -976,11 +1051,19 @@ if st.session_state.pref_pollen:
                 "available reading — explore past seasons in the chart below."
             )
 
-        # Historical time-series chart (daily max per category), gaps preserved.
+        # Historical time-series chart (daily max per series), gaps preserved.
         with st.expander("📈 Historical pollen levels", expanded=False):
+            pollen_view = st.radio(
+                "Group by",
+                ["Category", "Individual pollen type"],
+                horizontal=True,
+                key="pollen_hist_view",
+            )
+            group_col = "category" if pollen_view == "Category" else "pollen"
+
             hist = pollen_history.copy()
             chart_df = (
-                hist.groupby(["date", "category"], as_index=False)["numeric_level"].max()
+                hist.groupby(["date", group_col], as_index=False)["numeric_level"].max()
             )
             if not chart_df.empty:
                 chart_df["date"] = pd.to_datetime(chart_df["date"])
@@ -988,7 +1071,7 @@ if st.session_state.pref_pollen:
                     chart_df["date"].min(), chart_df["date"].max(), freq="D"
                 )
                 series = []
-                for name, grp in chart_df.groupby("category"):
+                for name, grp in chart_df.groupby(group_col):
                     s = (
                         grp.set_index("date")["numeric_level"]
                         .reindex(full_days)
@@ -999,24 +1082,33 @@ if st.session_state.pref_pollen:
                         s["numeric_level"].notna(),
                         s["numeric_level"].interpolate(limit=2, limit_area="inside"),
                     )
-                    s["category"] = name
+                    s[group_col] = name
                     series.append(s)
                 chart_df = pd.concat(series, ignore_index=True)
 
-                pollen_color_map = {
-                    "Tree pollen": "#2e7d32",
-                    "Grass pollen": "#00897b",
-                    "Weed pollen": "#8e24aa",
-                    "Other": "#9e9e9e",
-                }
-                fig_pollen = px.line(
-                    chart_df,
-                    x="date",
-                    y="numeric_level",
-                    color="category",
-                    color_discrete_map=pollen_color_map,
-                    labels={"date": "Date", "numeric_level": "Level (0–6)", "category": ""},
-                )
+                if pollen_view == "Category":
+                    pollen_color_map = {
+                        "Tree pollen": "#2e7d32",
+                        "Grass pollen": "#00897b",
+                        "Weed pollen": "#8e24aa",
+                        "Other": "#9e9e9e",
+                    }
+                    fig_pollen = px.line(
+                        chart_df,
+                        x="date",
+                        y="numeric_level",
+                        color=group_col,
+                        color_discrete_map=pollen_color_map,
+                        labels={"date": "Date", "numeric_level": "Level (0–6)", group_col: ""},
+                    )
+                else:
+                    fig_pollen = px.line(
+                        chart_df,
+                        x="date",
+                        y="numeric_level",
+                        color=group_col,
+                        labels={"date": "Date", "numeric_level": "Level (0–6)", group_col: ""},
+                    )
                 fig_pollen.update_traces(connectgaps=False, line=dict(width=2))
                 fig_pollen.update_yaxes(range=[-0.2, 6.2], dtick=1)
                 fig_pollen.update_layout(
@@ -1024,10 +1116,17 @@ if st.session_state.pref_pollen:
                     height=340,
                     margin=dict(l=10, r=10, t=20, b=10),
                     hovermode="x unified",
-                    legend_title_text="",
+                    legend=dict(
+                        itemclick="toggleothers",
+                        itemdoubleclick="toggle",
+                        title="",
+                    ),
                 )
                 st.plotly_chart(fig_pollen, use_container_width=True)
-                st.caption("Lines break where no data was reported (off-season gaps).")
+                st.caption(
+                    "Tip: single-click a legend entry to isolate that series; "
+                    "double-click to toggle it. Lines break where no data was reported."
+                )
             else:
                 st.info("No historical pollen readings are available.")
 
