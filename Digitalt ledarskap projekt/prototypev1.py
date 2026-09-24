@@ -729,7 +729,7 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
-    if st.button("Reconfigure Preferences (Onboard)", use_container_width=True):
+    if st.button("Save Preferences", use_container_width=True):
         if HAS_LOCAL_STORAGE:
             try:
                 local_storage.deleteItem("air_aware_preferences")
@@ -942,9 +942,9 @@ if st.session_state.pref_weather:
     st.caption(f"Source: {weather_source}")
     w_cols = st.columns(4)
     w_cols[0].metric("Temperature", display_value(temp_val, "°C"))
-    w_cols[1].metric("Relative Humidity", display_value(humidity_val, "%", 0))
+    w_cols[1].metric("Humidity", display_value(humidity_val, "%", 0))
     w_cols[2].metric("Wind Speed", display_value(wind_val, "m/s"))
-    w_cols[3].metric("Precipitation", display_value(rain_val, "mm"))
+    w_cols[3].metric("Rain", display_value(rain_val, "mm"))
 
 # Pollen (live Pollenrapporten data, full width)
 if st.session_state.pref_pollen:
